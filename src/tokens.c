@@ -6,7 +6,7 @@
 /*   By: thorgal <thorgal@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/04 17:21:22 by thorgal           #+#    #+#             */
-/*   Updated: 2025/02/06 16:56:56 by thorgal          ###   ########.fr       */
+/*   Updated: 2025/02/19 19:07:09 by thorgal          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,14 +31,24 @@ static int	handle_quotes(char *input, int *index)
 	return (1);
 }
 
-static void extract_quoted_token(char *input, int *index, char quote_char)
+static int extract_quoted_token(char *input, int *index, char quote_char)
 {
+	int	count;
+
+	count = 0;
     (*index)++;
     while (input[*index] && input[*index] != quote_char)
+	{
         (*index)++;
-    if (input[*index] == quote_char)
+		count++;
+	}
+	printf("count == %d\n", count);
+	if (input[*index] == quote_char)
         (*index)++;
-}
+	else if (input[*index] == '\0' || count == 0)
+		return (1);
+	return (0);
+	}
 
 char	*extract_token(char *input, int *index)
 {
@@ -52,7 +62,8 @@ char	*extract_token(char *input, int *index)
 	if (input[*index] == '\'' || input[*index] == '\"')
 	{
 		start = *index + 1;
-		extract_quoted_token(input, index, input[*index]);
+		if (extract_quoted_token(input, index, input[*index]) == 1)
+			return (NULL);
 		token_len = (*index - 1) - start;
 	}
 	else
@@ -107,6 +118,7 @@ char	**tokenize_command(char *input)
 		return (NULL);
 	i = 0;
 	index = 0;
+	printf("%d\n", count);
 	while (i < count)
 	{
 		tokens[i] = extract_token(input, &index);
