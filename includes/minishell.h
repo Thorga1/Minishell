@@ -43,7 +43,7 @@ typedef struct s_smd
 	char			*outfile;
 	int				append;
 	struct s_smd	*next;
-}
+}	t_smd;
 
 typedef struct s_shell
 {
