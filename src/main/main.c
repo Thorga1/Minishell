@@ -76,9 +76,10 @@ static int execute_builtin(char **tokens, t_shell *shell)
 
 static void process_input(char *input, t_shell *shell)
 {
-	char	**tokens;
-	int		i;
-	int		ret;
+	char			**tokens;
+	int				i;
+	int				ret;
+	t_token_type	type;
 
 	tokens = tokenize_command(input);
 	if (!tokens)
@@ -102,9 +103,9 @@ static void process_input(char *input, t_shell *shell)
 	i = 0;
 	while (tokens[i])
 	{
-    t_token_type type = classify_token(tokens[i]);
-    printf("Token[%d]: %s → Type: %d\n", i, tokens[i], type);
-    i++;
+		type = classify_token(tokens[i]);
+		printf("Token[%d]: %s → Type: %d\n", i, tokens[i], type);
+		i++;
 	}
 	i = 0;
 	while (tokens[i])
