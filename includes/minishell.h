@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   minishell.h                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: thorgal <thorgal@student.42.fr>            +#+  +:+       +#+        */
+/*   By: tordner <tordner@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/30 17:17:08 by thorgal           #+#    #+#             */
-/*   Updated: 2025/03/04 17:55:54 by thorgal          ###   ########.fr       */
+/*   Updated: 2025/03/06 18:37:43 by tordner          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,32 +24,31 @@
 
 typedef enum e_token_type
 {
-	TOKEN_COMMAND,
-	TOKEN_ARGUMENT,
+	TOKEN_WORD,
 	TOKEN_PIPE,
-	TOKEN_REDIRECTION_IN,     // <
-	TOKEN_REDIRECTION_OUT,    // >
-	TOKEN_REDIRECTION_APPEND, // >>
-	TOKEN_HEREDOC,            // <<
-	TOKEN_ENV_VAR,            // $VAR
-	TOKEN_QUOTED_STRING,
+	TOKEN_REDIRECTION_IN,		// <
+	TOKEN_REDIRECTION_OUT,		// >
+	TOKEN_APPEND,				// >>
+	TOKEN_HEREDOC,				// <<
+	TOKEN_ENV_VAR,				// $VAR
 	TOKEN_UNKNOWN
-}	t_token_type;
+} t_token_type;
  
 typedef struct s_smd
 {
-	char			**args;
-	char			*infile;
-	char			*outfile;
-	int				append;
-	struct s_smd	*next;
-}	t_smd;
+	char			**args;     // Arguments of the command
+	char			*infile;    // Input redirection file
+	char			*outfile;   // Output redirection file
+	int				append;     // Append flag for output redirection (1 = append, 0 = overwrite)
+	struct s_smd	*next;      // Pointer to the next command in the pipeline
+} t_smd;
+
 
 typedef struct s_shell
 {
-    char    **env;
-    int     exit_status;
-    int     running;
+	char    **env;
+	int     exit_status;
+	int     running;
 } t_shell;
 
 // Prototypes des builtins
@@ -72,6 +71,11 @@ char    *get_current_dir_name(void);
 
 // Token Syntax
 t_token_type	classify_token(char *token);
+int				validate_pipes(char **tokens);
+int				validate_syntax(char **tokens);
+int				validate_redirections(char **tokens);
+
+
 
 
 #endif

@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   main.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: thorgal <thorgal@student.42.fr>            +#+  +:+       +#+        */
+/*   By: tordner <tordner@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/30 17:17:15 by thorgal           #+#    #+#             */
-/*   Updated: 2025/03/04 16:39:30 by thorgal          ###   ########.fr       */
+/*   Updated: 2025/03/06 17:13:47 by tordner          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -99,7 +99,6 @@ static void process_input(char *input, t_shell *shell)
 	// 	shell->exit_status = ret;
 
 	
-	// Libération des tokens
 	i = 0;
 	while (tokens[i])
 	{
@@ -107,6 +106,8 @@ static void process_input(char *input, t_shell *shell)
 		printf("Token[%d]: %s → Type: %d\n", i, tokens[i], type);
 		i++;
 	}
+	validate_syntax(tokens);
+	// Libération des tokens
 	i = 0;
 	while (tokens[i])
 		free(tokens[i++]); 

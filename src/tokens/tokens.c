@@ -141,6 +141,29 @@ char	*extract_token(char *input, int *index)
 	return (token);
 }
 
+int	check_quotes(char *input)
+{
+	int	i;
+	int	count_single;
+	int	count_double;
+
+	i = 0;
+	count_double = 0;
+	count_single = 0;
+	while (input[i])
+	{
+		if (input[i] == '\"')
+			count_double++;
+		else if (input[i] == '\'')
+			count_single++;
+		i++;
+	}
+	if (count_double % 2 != 0 || count_single % 2 != 0)
+		return (1);
+	else
+		return (0);
+}
+
 char	**tokenize_command(char *input)
 {
 	char	**tokens;
@@ -162,5 +185,7 @@ char	**tokenize_command(char *input)
 		i++;
 	}
 	tokens[i] = NULL;
+	if (check_quotes(input) == 1)
+		return (free_tokens(tokens, i));
 	return (tokens);
 }
