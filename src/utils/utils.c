@@ -6,7 +6,7 @@
 /*   By: thorgal <thorgal@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/04 15:49:05 by thorgal           #+#    #+#             */
-/*   Updated: 2025/02/20 17:50:24 by thorgal          ###   ########.fr       */
+/*   Updated: 2025/03/03 13:22:49 by thorgal          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -40,4 +40,24 @@ char *get_current_dir_name(void)
 	if (!dir || !dir[1])
 		return (strdup(pwd));
 	return (strdup(dir + 1));
+}
+
+int ft_strcmp(const char *s1, const char *s2)
+{
+    int i;
+
+	i = 0;
+    while (s1[i] && s1[i] == s2[i])
+        i++;
+    return ((unsigned char)s1[i] - (unsigned char)s2[i]);
+}
+
+int	ft_strlen(char *str)
+{
+	int i;
+
+	i = 0;
+	while (str[i])
+		i++;
+	return (i);
 }
