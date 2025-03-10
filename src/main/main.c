@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   main.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: tordner <tordner@student.42.fr>            +#+  +:+       +#+        */
+/*   By: thorgal <thorgal@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/30 17:17:15 by thorgal           #+#    #+#             */
-/*   Updated: 2025/03/06 17:13:47 by tordner          ###   ########.fr       */
+/*   Updated: 2025/03/10 17:32:16 by thorgal          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -74,12 +74,59 @@ static int execute_builtin(char **tokens, t_shell *shell)
 	return (-1); // Pas une commande builtin
 }
 
+void print_list(t_smd *cmd_list)
+{
+    int cmd_count = 0;
+
+    if (!cmd_list)
+    {
+        printf("Command list is empty.\n");
+        return;
+    }
+
+    printf("=== COMMAND LIST DEBUG ===\n");
+
+    while (cmd_list)
+    {
+        printf("Command #%d:\n", cmd_count++);
+        
+        // Vérification de sécurité pour args
+        if (cmd_list->args)
+        {
+            int i = 0;
+            while (cmd_list->args[i])
+            {
+                printf("  args[%d] = \"%s\"\n", i, cmd_list->args[i]);
+                i++;
+            }
+            printf("  Total args: %d\n", i);
+        }
+        else
+        {
+            printf("  args = NULL\n");
+        }
+        
+        // Vérification de sécurité pour infile et outfile
+        printf("  infile = %s\n", cmd_list->infile ? cmd_list->infile : "NULL");
+        printf("  outfile = %s\n", cmd_list->outfile ? cmd_list->outfile : "NULL");
+        printf("  append status = %d\n", cmd_list->append);
+        printf("----------------------\n");
+        
+        // Vérification de sécurité pour next
+        t_smd *next = cmd_list->next;
+        cmd_list = next;
+    }
+    
+    printf("=== END OF COMMAND LIST ===\n");
+}
+
 static void process_input(char *input, t_shell *shell)
 {
 	char			**tokens;
 	int				i;
 	int				ret;
 	t_token_type	type;
+	t_smd			*cmd_list;
 
 	tokens = tokenize_command(input);
 	if (!tokens)
@@ -98,20 +145,16 @@ static void process_input(char *input, t_shell *shell)
 	// else
 	// 	shell->exit_status = ret;
 
-	
-	i = 0;
-	while (tokens[i])
-	{
-		type = classify_token(tokens[i]);
-		printf("Token[%d]: %s → Type: %d\n", i, tokens[i], type);
-		i++;
-	}
-	validate_syntax(tokens);
-	// Libération des tokens
-	i = 0;
-	while (tokens[i])
-		free(tokens[i++]); 
-	free(tokens);
+	if (validate_syntax(tokens))
+		{
+			i = 0;
+			while (tokens[i])
+				free(tokens[i++]); 
+			free(tokens);
+			return ;
+		}
+	cmd_list = parse_tokens_to_list(tokens);
+	print_list(cmd_list);
 }
 
 void	minishell_loop(t_shell *shell)

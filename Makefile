@@ -3,10 +3,10 @@
 #                                                         :::      ::::::::    #
 #    Makefile                                           :+:      :+:    :+:    #
 #                                                     +:+ +:+         +:+      #
-#    By: tordner <tordner@student.42.fr>            +#+  +:+       +#+         #
+#    By: thorgal <thorgal@student.42.fr>            +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2025/01/29 17:32:15 by thorgal           #+#    #+#              #
-#    Updated: 2025/03/06 18:12:20 by tordner          ###   ########.fr        #
+#    Updated: 2025/03/10 17:50:06 by thorgal          ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -27,6 +27,7 @@ INCDIR = includes
 SRCS = 	$(SRCDIR)/main/main.c \
 		$(SRCDIR)/utils/utils.c \
 		$(SRCDIR)/tokens/tokens.c \
+		$(SRCDIR)/tokens/tokens_utils.c \
 		$(SRCDIR)/tokens/syntax.c \
 		$(SRCDIR)/tokens/check_pipes.c \
 		$(SRCDIR)/tokens/check_redirections.c \
@@ -45,7 +46,7 @@ OBJSUBDIRS = $(sort $(dir $(OBJS)))
 all: $(NAME)
 
 $(NAME): $(OBJS)
-	@$(CC) $(CFLAGS) $(OBJS) -o $(NAME) -lreadline
+	@$(CC) $(CFLAGS) $(OBJS) -o $(NAME) -g3 -lreadline
 
 # Règle pour créer les fichiers objets
 $(OBJDIR)/%.o: $(SRCDIR)/%.c | $(OBJSUBDIRS)

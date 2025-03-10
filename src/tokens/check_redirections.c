@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   check_redirections.c                               :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: tordner <tordner@student.42.fr>            +#+  +:+       +#+        */
+/*   By: thorgal <thorgal@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/06 17:17:19 by tordner           #+#    #+#             */
-/*   Updated: 2025/03/06 17:42:45 by tordner          ###   ########.fr       */
+/*   Updated: 2025/03/10 17:46:52 by thorgal          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,7 +29,8 @@ static int	check_further_redirections(char **tokens, int i)
 	}
 	if (is_redirection(tokens[i]) && is_redirection(tokens[i + 1]))
 	{
-		printf("Syntax error: Consecutive redirection operators are not allowed\n");
+		printf("Syntax error: Consecutive"
+			"redirection operators are not allowed\n");
 		return (1);
 	}
 	if (tokens[i] && tokens[i + 1] && classify_token(tokens[i]) == TOKEN_PIPE)
@@ -48,7 +49,7 @@ int	validate_redirections(char **tokens)
 	int	i;
 
 	i = 0;
-    if (is_redirection(tokens[i]))
+	if (is_redirection(tokens[i]))
 	{
 		printf("Syntax error: Redirection cannot appear at the beginning\n");
 		return (1);

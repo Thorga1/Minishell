@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   minishell.h                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: tordner <tordner@student.42.fr>            +#+  +:+       +#+        */
+/*   By: thorgal <thorgal@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/30 17:17:08 by thorgal           #+#    #+#             */
-/*   Updated: 2025/03/06 18:37:43 by tordner          ###   ########.fr       */
+/*   Updated: 2025/03/10 17:49:49 by thorgal          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -63,6 +63,7 @@ char    **tokenize_command(char *input);
 size_t  ft_strlcpy(char *dst, const char *src, size_t dstsize);
 int 	ft_strcmp(const char *s1, const char *s2);
 int		ft_strlen(char *str);
+char	*ft_strdup(const char *s1);
 void    initialize_shell(t_shell *shell, char **envp);
 void    minishell_loop(t_shell *shell);
 
@@ -75,7 +76,15 @@ int				validate_pipes(char **tokens);
 int				validate_syntax(char **tokens);
 int				validate_redirections(char **tokens);
 
+// Token Utils
+void *free_tokens(char **tokens, int count);
+int extract_quoted_token(char *input, int *index, char quote_char);
+int is_delimiter(char c);
+int is_special(char c);
+void skip_delimiters(char *str, int *i);
 
-
+// Token List
+t_smd	*parse_tokens_to_list(char **tokens);
+t_smd	*create_new_node(void);
 
 #endif
