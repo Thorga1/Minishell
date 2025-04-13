@@ -12,9 +12,9 @@
 
 #include "minishell.h"
 
-void free_cmd_list(t_smd *cmd_list)
+void	free_cmd_list(t_smd *cmd_list)
 {
-	t_smd *temp;
+	t_smd	*temp;
 
 	while (cmd_list)
 	{

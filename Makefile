@@ -26,6 +26,7 @@ SRCS = 	$(SRCDIR)/main/main.c \
 		$(SRCDIR)/main/shell.c \
 		$(SRCDIR)/utils/utils.c \
 		$(SRCDIR)/utils/free.c \
+		$(SRCDIR)/main/input.c \
 		$(SRCDIR)/tokens/tokens.c \
 		$(SRCDIR)/tokens/tokens_utils.c \
 		$(SRCDIR)/tokens/syntax.c \

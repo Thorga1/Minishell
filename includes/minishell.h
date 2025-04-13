@@ -22,6 +22,7 @@
 # include <readline/history.h>
 # include <dirent.h>
 # include <stddef.h>
+# include <fcntl.h>
 # include "../libft/include/libft.h"
 # include "messages.h"
 typedef enum e_token_type
@@ -109,11 +110,16 @@ void	*free_tokens(char **tokens, int count);
 
 //main	
 void	initialize_shell(t_shell *shell, char **envp);
-void	process_input(char *input, t_shell *shell);
+int		execute_builtin(t_smd *cmd, t_shell *shell);
+
 
 
 //shell
 void	minishell_loop(t_shell *shell);
+
+//input
+char	**parse_input(char *input, t_shell *shell);
+void	process_input(char *input, t_shell *shell);
 
 // Token Syntax
 t_token_type	classify_token(char *token);

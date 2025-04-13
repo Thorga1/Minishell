@@ -6,7 +6,7 @@
 /*   By: thorgal <thorgal@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/04 15:49:05 by thorgal           #+#    #+#             */
-/*   Updated: 2025/03/10 17:37:05 by thorgal          ###   ########.fr       */
+/*   Updated: 2025/04/13 17:37:05 by lfirmin          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,23 +25,23 @@ char	*get_current_dir_name(void)
 	return (strdup(dir + 1));
 }
 
-char *ft_get_env_var(char **env, char *var)
+char	*ft_get_env_var(char **env, char *var)
 {
-    int i;
-    int len;
+	int	i;
+	int	len;
 
-    i = 0;
-    len = ft_strlen(var);
-    while (env[i])  
-    {
-        if (ft_strncmp(env[i], var, len) == 0 && env[i][len] == '=')
-            return (&env[i][len + 1]);
-        i++;
-    }
-    return (NULL);
+	i = 0;
+	len = ft_strlen(var);
+	while (env[i])
+	{
+		if (ft_strncmp(env[i], var, len) == 0 && env[i][len] == '=')
+			return (&env[i][len + 1]);
+		i++;
+	}
+	return (NULL);
 }
 
-char **copy_env(char **envp)
+char	**copy_env(char **envp)
 {
 	char	**env;
 	int		i;
@@ -69,42 +69,41 @@ char **copy_env(char **envp)
 	return (env);
 }
 
-int is_git_repository(void)
+int	is_git_repository(void)
 {
-    FILE *fp;
-    int result = 0;
-    
-    fp = popen("git rev-parse --is-inside-work-tree 2>/dev/null", "r");
-    if (fp != NULL) {
-        char line[10];
-        if (fgets(line, sizeof(line), fp) != NULL) {
-            if (strncmp(line, "true", 4) == 0)
-                result = 1;
-        }
-        pclose(fp);
-    }
-    
-    return result;
+	FILE	*fp;
+	int		result;
+	char	line[10];
+
+	result = 0;
+	fp = popen("git rev-parse --is-inside-work-tree 2>/dev/null", "r");
+	if (fp != NULL)
+	{
+		if (fgets(line, sizeof(line), fp) != NULL)
+		{
+			if (strncmp(line, "true", 4) == 0)
+				result = 1;
+		}
+		pclose(fp);
+	}
+	return (result);
 }
 
-char *get_git_branch(void)
+char	*get_git_branch(void)
 {
-    FILE *fp;
-    char *branch = NULL;
-    char path[1024];
-    char line[1024];
-    
-    // Exécuter la commande git pour obtenir la branche actuelle
-    fp = popen("git branch 2>/dev/null | grep \\* | cut -d ' ' -f2", "r");
-    if (fp == NULL)
-        return NULL;
-    
-    if (fgets(line, sizeof(line), fp) != NULL) {
-        // Supprimer le retour à la ligne
-        line[strcspn(line, "\n")] = 0;
-        branch = strdup(line);
-    }
-    
-    pclose(fp);
-    return branch;
+	FILE	*fp;
+	char	*branch;
+	char	path[1024];
+	char	line[1024];
+
+	fp = popen("git branch 2>/dev/null | grep \\* | cut -d ' ' -f2", "r");
+	if (fp == NULL)
+		return (NULL);
+	if (fgets(line, sizeof(line), fp) != NULL)
+	{
+		line[strcspn(line, "\n")] = 0;
+		branch = strdup(line);
+	}
+	pclose(fp);
+	return (branch);
 }
