@@ -21,7 +21,9 @@
 # include <readline/readline.h>
 # include <readline/history.h>
 # include <dirent.h>
-
+# include <stddef.h>
+# include "../libft/include/libft.h"
+# include "messages.h"
 typedef enum e_token_type
 {
 	TOKEN_WORD,
@@ -31,9 +33,9 @@ typedef enum e_token_type
 	TOKEN_APPEND,				// >>
 	TOKEN_HEREDOC,				// <<
 	TOKEN_ENV_VAR,				// $VAR
-	TOKEN_UNKNOWN
+	TOKEN_UNKNOWN				// ????	
 } t_token_type;
- 
+
 typedef struct s_smd
 {
 	char			**args;     // Arguments of the command
@@ -43,32 +45,75 @@ typedef struct s_smd
 	struct s_smd	*next;      // Pointer to the next command in the pipeline
 } t_smd;
 
-
 typedef struct s_shell
 {
-	char    **env;
-	int     exit_status;
-	int     running;
+	char    **env;			// Environment variables
+	int     exit_status;	// Exit status of the last command
+	int     running;		// Running flag
 } t_shell;
 
-// Prototypes des builtins
-int     ft_echo(char **args);
-int     ft_cd(const char *path);
-void    ft_pwd(void);
-int     ft_ls(void);
-int     ft_clear(void);
+// typedef struct s_redirection
+// {
+// 	int				type; // 1 = input, 2 = output, 3 = append, 0 = none
+// 	char			*file;
+// 	t_redirection	*next;
+// } t_redirection;
 
-// Core functions
-char    **tokenize_command(char *input);
-size_t  ft_strlcpy(char *dst, const char *src, size_t dstsize);
-int 	ft_strcmp(const char *s1, const char *s2);
-int		ft_strlen(char *str);
-char	*ft_strdup(const char *s1);
-void    initialize_shell(t_shell *shell, char **envp);
-void    minishell_loop(t_shell *shell);
+// builtins
+int		ft_echo(t_smd *cmd, t_shell *shell);
+int		ft_cd(t_smd *cmd, t_shell *shell);
+void	ft_pwd(void);
+int		ft_ls(void);
+int		ft_clear(void);
+int 	ft_env(t_shell *shell);
+int 	ft_export(t_shell *shell, t_smd *cmd);
+int 	ft_unset(t_shell *shell, t_smd *cmd);
 
-// Dans la section des fonctions utilitaires
-char    *get_current_dir_name(void);
+//check_pipes
+int		validate_pipes(char **tokens);
+
+//check_redirections
+int		validate_redirections(char **tokens);
+
+//syntax
+int		validate_syntax(char **tokens);
+
+//token_list
+t_smd	*parse_tokens_to_list(char **tokens);
+t_smd	*create_new_node(void);
+void	free_cmd_list(t_smd *cmd_list);
+
+//token_utils
+void	*free_tokens(char **tokens, int count);
+int		extract_quoted_token(char *input, int *index, char quote_char);
+int		is_delimiter(char c);
+int		is_special(char c);
+void	skip_delimiters(char *str, int *i);
+
+//token
+int		count_tokens(char *str);
+char	*extract_token(char *input, int *index);
+int		check_quotes(char *input);
+char	**tokenize_command(char *input);
+
+//utils
+char	*get_current_dir_name(void);
+char	*ft_get_env_var(char **env, char *var);
+char	**copy_env(char **envp);
+int		is_git_repository(void);
+char	*get_git_branch(void);
+
+//free
+void	free_cmd_list(t_smd *cmd_list);
+void	*free_tokens(char **tokens, int count);
+
+//main	
+void	initialize_shell(t_shell *shell, char **envp);
+void	process_input(char *input, t_shell *shell);
+
+
+//shell
+void	minishell_loop(t_shell *shell);
 
 // Token Syntax
 t_token_type	classify_token(char *token);
@@ -76,15 +121,9 @@ int				validate_pipes(char **tokens);
 int				validate_syntax(char **tokens);
 int				validate_redirections(char **tokens);
 
-// Token Utils
-void *free_tokens(char **tokens, int count);
-int extract_quoted_token(char *input, int *index, char quote_char);
-int is_delimiter(char c);
-int is_special(char c);
-void skip_delimiters(char *str, int *i);
-
 // Token List
 t_smd	*parse_tokens_to_list(char **tokens);
 t_smd	*create_new_node(void);
+void	free_cmd_list(t_smd *cmd_list);
 
 #endif

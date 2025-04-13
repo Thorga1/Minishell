@@ -12,194 +12,82 @@
 
 #include "minishell.h"
 
-static char **copy_env(char **envp)
-{
-	char	**env;
-	int		i;
-
-	i = 0;
-	while (envp[i])
-		i++;
-	env = malloc(sizeof(char *) * (i + 1));
-	if (!env)
-		return (NULL);
-	i = 0;
-	while (envp[i])
-	{
-		env[i] = strdup(envp[i]);
-		if (!env[i])
-		{
-			while (--i >= 0)
-				free(env[i]);
-			free(env);
-			return (NULL);
-		}
-		i++;
-	}
-	env[i] = NULL;
-	return (env);
-}
 
 void	initialize_shell(t_shell *shell, char **envp)
 {
 	shell->env = copy_env(envp);
 	shell->exit_status = 0;
 	shell->running = 1;
-	printf("Welcome to our MiniShell.\n");
+	printf(WELCOME_MESS);
 }
 
-static int execute_builtin(char **tokens, t_shell *shell)
+static int execute_builtin(t_smd *cmd, t_shell *shell)
 {
-	if (!tokens || !tokens[0])
+	if (!cmd || !cmd->args || !cmd->args[0])
 		return (0);
-	
-	if (strcmp(tokens[0], "echo") == 0)
-		return (ft_echo(tokens));
-	else if (strcmp(tokens[0], "cd") == 0)
-		return (ft_cd(tokens[1]));
-	else if (strcmp(tokens[0], "pwd") == 0)
-	{
-		ft_pwd();
-		return (0);
-	}
-	else if (strcmp(tokens[0], "ls") == 0)
+	if (strcmp(cmd->args[0], "echo") == 0)
+		return (ft_echo(cmd, shell));
+	else if (strcmp(cmd->args[0], "cd") == 0)
+		return (ft_cd(cmd, shell));
+	else if (strcmp(cmd->args[0], "pwd") == 0)
+		return (ft_pwd(), 0);
+	else if (strcmp(cmd->args[0], "ls") == 0)
 		return (ft_ls());
-	else if (strcmp(tokens[0], "clear") == 0)
+	else if (strcmp(cmd->args[0], "clear") == 0)
 		return (ft_clear());
-	else if (strcmp(tokens[0], "exit") == 0)
-	{
-		shell->running = 0;
-		return (0);
-	}
-	return (-1); // Pas une commande builtin
+	else if (strcmp(cmd->args[0], "exit") == 0)
+		return (shell->running = 0, 0);
+	else if (strcmp(cmd->args[0], "env") == 0)
+		return (ft_env(shell));
+	else if (strcmp(cmd->args[0], "export") == 0)
+		return (ft_export(shell, cmd));
+	else if (strcmp(cmd->args[0], "unset") == 0)
+		return (ft_unset(shell, cmd));
+	return (-1);
 }
 
-void print_list(t_smd *cmd_list)
-{
-    int cmd_count = 0;
-
-    if (!cmd_list)
-    {
-        printf("Command list is empty.\n");
-        return;
-    }
-
-    printf("=== COMMAND LIST DEBUG ===\n");
-
-    while (cmd_list)
-    {
-        printf("Command #%d:\n", cmd_count++);
-        
-        // Vérification de sécurité pour args
-        if (cmd_list->args)
-        {
-            int i = 0;
-            while (cmd_list->args[i])
-            {
-                printf("  args[%d] = \"%s\"\n", i, cmd_list->args[i]);
-                i++;
-            }
-            printf("  Total args: %d\n", i);
-        }
-        else
-        {
-            printf("  args = NULL\n");
-        }
-        
-        // Vérification de sécurité pour infile et outfile
-        printf("  infile = %s\n", cmd_list->infile ? cmd_list->infile : "NULL");
-        printf("  outfile = %s\n", cmd_list->outfile ? cmd_list->outfile : "NULL");
-        printf("  append status = %d\n", cmd_list->append);
-        printf("----------------------\n");
-        
-        // Vérification de sécurité pour next
-        t_smd *next = cmd_list->next;
-        cmd_list = next;
-    }
-    
-    printf("=== END OF COMMAND LIST ===\n");
-}
-
-static void process_input(char *input, t_shell *shell)
+void process_input(char *input, t_shell *shell)
 {
 	char			**tokens;
 	int				i;
 	int				ret;
-	t_token_type	type;
 	t_smd			*cmd_list;
 
 	tokens = tokenize_command(input);
 	if (!tokens)
 	{
-		printf("Error: Tokenization failed\n");
+		printf(ERROR_TOKEN);
 		shell->exit_status = 1;
 		return;
 	}
 
-	// ret = execute_builtin(tokens, shell);
-	// if (ret == -1)
-	// {
-	// 	printf("Command not found: %s\n", tokens[0]);
-	// 	shell->exit_status = 127;
-	// }
-	// else
-	// 	shell->exit_status = ret;
-
 	if (validate_syntax(tokens))
-		{
-			i = 0;
-			while (tokens[i])
-				free(tokens[i++]); 
-			free(tokens);
-			return ;
-		}
-	cmd_list = parse_tokens_to_list(tokens);
-	print_list(cmd_list);
-}
-
-void	minishell_loop(t_shell *shell)
-{
-	char	*input;
-	char	*dir_name;
-	char	*prompt;
-	int		i;
-
-	while (shell->running)
 	{
-		dir_name = get_current_dir_name();
-		prompt = malloc(strlen(dir_name) + 35); // Plus d'espace pour les codes couleur
-		if (prompt)
+		i = 0;
+		while (tokens[i])
+			free(tokens[i++]); 
+		free(tokens);
+		return;
+	}
+	
+	cmd_list = parse_tokens_to_list(tokens);
+	if (cmd_list)
+	{
+		ret = execute_builtin(cmd_list, shell);
+		if (ret == -1)
 		{
-			// Si exit_status est 0 (succès) -> flèche verte, sinon rouge
-			if (shell->exit_status == 0)
-				sprintf(prompt, "\033[1;32m➜\033[0m  \033[1;36m%s\033[0m ❯ ", dir_name);
-			else
-				sprintf(prompt, "\033[1;31m➜\033[0m  \033[1;36m%s\033[0m ❯ ", dir_name);
+			printf(ERROR_NOT_FOUND, cmd_list->args[0]);
+			shell->exit_status = 127;
 		}
 		else
-			prompt = strdup("➜  ❯ ");
-			
-		input = readline(prompt);
-		free(prompt);
-		free(dir_name);
+			shell->exit_status = ret;
 		
-		if (!input)
-		{
-			printf("exit\n");
-			break;
-		}
-
-		i = 0;
-		while (input[i] && (input[i] == ' ' || input[i] == '\t'))
-			i++;
-		
-		if (input[i] != '\0')
-		{
-			add_history(input);
-			process_input(input, shell);
-		}
-		free(input);
+		free_cmd_list(cmd_list);
 	}
+	i = 0;
+	while (tokens[i])
+		free(tokens[i++]);
+	free(tokens);
 }
 
 int main(void)

@@ -12,22 +12,6 @@
 
 #include "minishell.h"
 
-size_t	ft_strlcpy(char *dst, const char *src, size_t dstsize)
-{
-	size_t	i;
-
-	if (dstsize == 0)
-		return (strlen(src));
-	i = 0;
-	while (src[i] && i < dstsize - 1)
-	{
-		dst[i] = src[i];
-		i++;
-	}
-	dst[i] = '\0';
-	return (strlen(src));
-}
-
 char	*get_current_dir_name(void)
 {
 	char	pwd[PATH_MAX];
@@ -41,43 +25,86 @@ char	*get_current_dir_name(void)
 	return (strdup(dir + 1));
 }
 
-int	ft_strcmp(const char *s1, const char *s2)
+char *ft_get_env_var(char **env, char *var)
 {
-	int	i;
+    int i;
+    int len;
 
-	i = 0;
-	while (s1[i] && s1[i] == s2[i])
-		i++;
-	return ((unsigned char)s1[i] - (unsigned char)s2[i]);
+    i = 0;
+    len = ft_strlen(var);
+    while (env[i])  
+    {
+        if (ft_strncmp(env[i], var, len) == 0 && env[i][len] == '=')
+            return (&env[i][len + 1]);
+        i++;
+    }
+    return (NULL);
 }
 
-int	ft_strlen(char *str)
+char **copy_env(char **envp)
 {
-	int	i;
-
-	i = 0;
-	while (str[i])
-		i++;
-	return (i);
-}
-
-char	*ft_strdup(const char *s1)
-{
-	char	*dup;
+	char	**env;
 	int		i;
 
 	i = 0;
-	while (s1[i])
+	while (envp[i])
 		i++;
-	dup = malloc(sizeof(char) * (i + 1));
-	if (!dup)
+	env = malloc(sizeof(char *) * (i + 1));
+	if (!env)
 		return (NULL);
 	i = 0;
-	while (s1[i])
+	while (envp[i])
 	{
-		dup[i] = s1[i];
+		env[i] = strdup(envp[i]);
+		if (!env[i])
+		{
+			while (--i >= 0)
+				free(env[i]);
+			free(env);
+			return (NULL);
+		}
 		i++;
 	}
-	dup[i] = '\0';
-	return (dup);
+	env[i] = NULL;
+	return (env);
+}
+
+int is_git_repository(void)
+{
+    FILE *fp;
+    int result = 0;
+    
+    fp = popen("git rev-parse --is-inside-work-tree 2>/dev/null", "r");
+    if (fp != NULL) {
+        char line[10];
+        if (fgets(line, sizeof(line), fp) != NULL) {
+            if (strncmp(line, "true", 4) == 0)
+                result = 1;
+        }
+        pclose(fp);
+    }
+    
+    return result;
+}
+
+char *get_git_branch(void)
+{
+    FILE *fp;
+    char *branch = NULL;
+    char path[1024];
+    char line[1024];
+    
+    // Exécuter la commande git pour obtenir la branche actuelle
+    fp = popen("git branch 2>/dev/null | grep \\* | cut -d ' ' -f2", "r");
+    if (fp == NULL)
+        return NULL;
+    
+    if (fgets(line, sizeof(line), fp) != NULL) {
+        // Supprimer le retour à la ligne
+        line[strcspn(line, "\n")] = 0;
+        branch = strdup(line);
+    }
+    
+    pclose(fp);
+    return branch;
 }

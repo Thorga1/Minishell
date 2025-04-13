@@ -26,8 +26,8 @@ t_token_type	classify_token(char *token)
 		return (TOKEN_REDIRECTION_IN);
 	if (ft_strcmp(token, "<<") == 0)
 		return (TOKEN_HEREDOC);
-	if (token[0] == '$' && ft_strlen(token) > 1)
-		return (TOKEN_ENV_VAR);
+	// if (token[0] == '$' && ft_strlen(token) > 1)
+	// 	return (TOKEN_ENV_VAR);
 	return (TOKEN_WORD);
 }
 

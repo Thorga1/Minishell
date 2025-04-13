@@ -1,7 +1,7 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   ls.c                                               :+:      :+:    :+:   */
+/*   clear.c                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: thorgal <thorgal@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
@@ -11,29 +11,18 @@
 /* ************************************************************************** */
 
 #include "../../includes/minishell.h"
-#include <dirent.h>
 
-int ft_ls(void)
+int ft_env(t_shell *shell)
 {
-    DIR             *dir;
-    struct dirent   *entry;
-    char            *current_dir;
+    int i;
 
-    current_dir = ".";
-    dir = opendir(current_dir);
-    if (!dir)
-    {
-        perror("ls");
+    i = 0;
+    if (!shell->env)
         return (1);
-    }
-
-    while ((entry = readdir(dir)) != NULL)
+    while (shell->env[i])
     {
-        if (entry->d_name[0] != '.')
-            printf("%s  ", entry->d_name);
+        printf("%s\n", shell->env[i]);
+        i++;
     }
-    printf("\n");
-
-    closedir(dir);
     return (0);
-} 
+}

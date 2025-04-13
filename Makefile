@@ -16,16 +16,16 @@ CC = cc
 
 CFLAGS = -pthread -Iincludes
 
-# -Wall -Wextra -Werror rajouter apres les tests
-
 SRCDIR = src
-
+LIBFT = libft.a
 OBJDIR = obj
 
 INCDIR = includes
 
 SRCS = 	$(SRCDIR)/main/main.c \
+		$(SRCDIR)/main/shell.c \
 		$(SRCDIR)/utils/utils.c \
+		$(SRCDIR)/utils/free.c \
 		$(SRCDIR)/tokens/tokens.c \
 		$(SRCDIR)/tokens/tokens_utils.c \
 		$(SRCDIR)/tokens/syntax.c \
@@ -37,16 +37,19 @@ SRCS = 	$(SRCDIR)/main/main.c \
 		$(SRCDIR)/builtins/pwd.c \
 		$(SRCDIR)/builtins/ls.c \
 		$(SRCDIR)/builtins/clear.c \
+		$(SRCDIR)/builtins/env.c \
+		$(SRCDIR)/builtins/export.c \
+		$(SRCDIR)/builtins/unset.c
 
 OBJS = $(SRCS:$(SRCDIR)/%.c=$(OBJDIR)/%.o)
-
 
 OBJSUBDIRS = $(sort $(dir $(OBJS)))
 
 all: $(NAME)
 
 $(NAME): $(OBJS)
-	@$(CC) $(CFLAGS) $(OBJS) -o $(NAME) -g3 -lreadline
+	@$(MAKE) -s -C libft
+	@$(CC) $(CFLAGS) $(OBJS) -o $(NAME) -g3 -lreadline libft/$(LIBFT)
 
 # Règle pour créer les fichiers objets
 $(OBJDIR)/%.o: $(SRCDIR)/%.c | $(OBJSUBDIRS)
@@ -57,11 +60,16 @@ $(OBJSUBDIRS):
 	@mkdir -p $@
 
 clean:
+	@make clean -s -C libft
 	@rm -rf $(OBJDIR)
 
-fclean: clean
+clean1:
+	@rm -rf $(OBJDIR)
+
+fclean: clean1
+	@make fclean -s -C libft
 	@rm -f $(NAME)
 
 re: fclean all
 
-.PHONY: all clean fclean re
+.PHONY: all clean fclean re clean1

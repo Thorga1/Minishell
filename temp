@@ -1,0 +1,47 @@
+/* Fonction de debug commentée
+void print_list(t_smd *cmd_list)
+{
+    int cmd_count = 0;
+
+    if (!cmd_list)
+    {
+        printf("Command list is empty.\n");
+        return;
+    }
+
+    printf("=== COMMAND LIST DEBUG ===\n");
+
+    while (cmd_list)
+    {
+        printf("Command #%d:\n", cmd_count++);
+        
+        // Vérification de sécurité pour args
+        if (cmd_list->args)
+        {
+            int i = 0;
+            while (cmd_list->args[i])
+            {
+                printf("  args[%d] = \"%s\"\n", i, cmd_list->args[i]);
+                i++;
+            }
+            printf("  Total args: %d\n", i);
+        }
+        else
+        {
+            printf("  args = NULL\n");
+        }
+        
+        // Vérification de sécurité pour infile et outfile
+        printf("  infile = %s\n", cmd_list->infile ? cmd_list->infile : "NULL");
+        printf("  outfile = %s\n", cmd_list->outfile ? cmd_list->outfile : "NULL");
+        printf("  append status = %d\n", cmd_list->append);
+        printf("----------------------\n");
+        
+        // Vérification de sécurité pour next
+        t_smd *next = cmd_list->next;
+        cmd_list = next;
+    }
+    
+    printf("=== END OF COMMAND LIST ===\n");
+}
+*/
