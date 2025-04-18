@@ -1,6 +1,6 @@
 #include "../../includes/minishell.h"
 
-int ft_cd(t_smd *cmd, t_shell *shell)
+int ft_cd(t_cmd *cmd, t_shell *shell)
 {
     char *home;
     char *path;

@@ -29,7 +29,7 @@ int find_env_var(char **env, char *var)
     return (-1);
 }
 
-int	ft_unset(t_shell *shell, t_smd *cmd)
+int	ft_unset(t_shell *shell, t_cmd *cmd)
 {
     int i;
     int index;

@@ -3,16 +3,16 @@
 /*                                                        :::      ::::::::   */
 /*   check_redirections.c                               :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: thorgal <thorgal@student.42.fr>            +#+  +:+       +#+        */
+/*   By: tordner <tordner@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/06 17:17:19 by tordner           #+#    #+#             */
-/*   Updated: 2025/03/10 17:46:52 by thorgal          ###   ########.fr       */
+/*   Updated: 2025/04/18 13:57:59 by tordner          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
-static int	is_redirection(char *token)
+int	is_redirection(char *token)
 {
 	t_token_type	type;
 

@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   input.c                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: lfirmin <lfirmin@student.42.fr>            +#+  +:+       +#+        */
+/*   By: tordner <tordner@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/30 17:17:15 by lfirmin           #+#    #+#             */
-/*   Updated: 2025/04/13 17:32:16 by lfirmin          ###   ########.fr       */
+/*   Updated: 2025/04/18 14:01:29 by tordner          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -40,7 +40,7 @@ void	process_input(char *input, t_shell *shell)
 	char			**tokens;
 	int				i;
 	int				ret;
-	t_smd			*cmd_list;
+	t_cmd			*cmd_list;
 
 	tokens = parse_input(input, shell);
 	if (!tokens)

@@ -1,32 +1,16 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   philo.h                                            :+:      :+:    :+:   */
+/*   free.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: lfirmin <lfirmin@student.42.fr>            +#+  +:+       +#+        */
+/*   By: tordner <tordner@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/21 15:38:19 by lfirmin           #+#    #+#             */
-/*   Updated: 2024/11/21 15:38:19 by lfirmin          ###   ########.fr       */
+/*   Updated: 2025/04/18 13:56:26 by tordner          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
-
-void	free_cmd_list(t_smd *cmd_list)
-{
-	t_smd	*temp;
-
-	while (cmd_list)
-	{
-		temp = cmd_list;
-		cmd_list = cmd_list->next;
-		if (temp->infile)
-			free(temp->infile);
-		if (temp->outfile)
-			free(temp->outfile);
-		free(temp);
-	}
-}
 
 void	*free_tokens(char **tokens, int count)
 {

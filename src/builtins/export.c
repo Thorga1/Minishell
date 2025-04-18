@@ -79,7 +79,7 @@ static int update_env_var(char **env, char *var)
     }
     return (0);
 }
-int ft_export(t_shell *shell, t_smd *cmd)
+int ft_export(t_shell *shell, t_cmd *cmd)
 {
     int i;
     int ret;

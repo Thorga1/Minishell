@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   main.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: lfirmin <lfirmin@student.42.fr>            +#+  +:+       +#+        */
+/*   By: tordner <tordner@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/30 17:17:15 by lfirmin           #+#    #+#             */
-/*   Updated: 2025/04/13 17:32:16 by lfirmin          ###   ########.fr       */
+/*   Updated: 2025/04/18 13:59:47 by tordner          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,7 +20,7 @@ void	initialize_shell(t_shell *shell, char **envp)
 	printf(WELCOME_MESS);
 }
 
-int	execute_builtin(t_smd *cmd, t_shell *shell)
+int	execute_builtin(t_cmd *cmd, t_shell *shell)
 {
 	if (!cmd || !cmd->args || !cmd->args[0])
 		return (0);

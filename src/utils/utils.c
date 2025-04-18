@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   utils.c                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: thorgal <thorgal@student.42.fr>            +#+  +:+       +#+        */
+/*   By: tordner <tordner@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/04 15:49:05 by thorgal           #+#    #+#             */
-/*   Updated: 2025/04/13 17:37:05 by lfirmin          ###   ########.fr       */
+/*   Updated: 2025/04/18 14:01:00 by tordner          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -93,9 +93,9 @@ char	*get_git_branch(void)
 {
 	FILE	*fp;
 	char	*branch;
-	char	path[1024];
 	char	line[1024];
 
+	branch = NULL;
 	fp = popen("git branch 2>/dev/null | grep \\* | cut -d ' ' -f2", "r");
 	if (fp == NULL)
 		return (NULL);
