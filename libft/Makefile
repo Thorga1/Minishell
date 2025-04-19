@@ -1,12 +1,12 @@
 # **************************************************************************** #
 #                                                                              #
 #                                                         :::      ::::::::    #
-#    makefile                                           :+:      :+:    :+:    #
+#    Makefile                                           :+:      :+:    :+:    #
 #                                                     +:+ +:+         +:+      #
-#    By: lfirmin <marvin@42.fr>                     +#+  +:+       +#+         #
+#    By: lfirmin <lfirmin@student.42.fr>            +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2024/05/19 12:59:31 by lfirmin           #+#    #+#              #
-#    Updated: 2024/05/22 15:18:38 by lfirmin          ###   ########.fr        #
+#    Updated: 2025/04/19 11:53:48 by lfirmin          ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -23,7 +23,7 @@ SRC =   ft_isalnum.c ft_isprint.c ft_memcmp.c  ft_putchar_fd.c ft_split.c \
         ft_lstnew_bonus.c ft_lstadd_front_bonus.c ft_lstsize_bonus.c \
         ft_lstlast_bonus.c ft_lstadd_back_bonus.c ft_lstdelone_bonus.c \
         ft_lstclear_bonus.c ft_lstiter_bonus.c ft_lstmap_bonus.c ft_strcmp.c \
-        ft_atoll.c ft_straddchar.c
+        ft_atoll.c ft_straddchar.c ft_strcpy.c
 
 SRCS = $(addprefix $(SRCS_DIR), $(SRC))
 CC = cc

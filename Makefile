@@ -3,10 +3,10 @@
 #                                                         :::      ::::::::    #
 #    Makefile                                           :+:      :+:    :+:    #
 #                                                     +:+ +:+         +:+      #
-#    By: tordner <tordner@student.42.fr>            +#+  +:+       +#+         #
+#    By: lfirmin <lfirmin@student.42.fr>            +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2025/01/29 17:32:15 by thorgal           #+#    #+#              #
-#    Updated: 2025/04/18 13:59:25 by tordner          ###   ########.fr        #
+#    Updated: 2025/04/19 14:35:13 by lfirmin          ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -14,7 +14,7 @@ NAME = minishell
 
 CC = cc
 
-CFLAGS = -pthread -Iincludes -Wall -Werror -Wextra
+CFLAGS = -pthread -Iincludes
 
 SRCDIR = src
 LIBFT = libft.a
@@ -36,11 +36,12 @@ SRCS = 	$(SRCDIR)/main/main.c \
 		$(SRCDIR)/builtins/echo.c \
 		$(SRCDIR)/builtins/cd.c \
 		$(SRCDIR)/builtins/pwd.c \
-		$(SRCDIR)/builtins/ls.c \
-		$(SRCDIR)/builtins/clear.c \
 		$(SRCDIR)/builtins/env.c \
 		$(SRCDIR)/builtins/export.c \
-		$(SRCDIR)/builtins/unset.c
+		$(SRCDIR)/builtins/unset.c \
+		$(SRCDIR)/exec/exec.c \
+		$(SRCDIR)/exec/file_handler.c \
+		$(SRCDIR)/exec/get_env.c
 
 OBJS = $(SRCS:$(SRCDIR)/%.c=$(OBJDIR)/%.o)
 

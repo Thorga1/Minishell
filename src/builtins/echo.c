@@ -86,14 +86,14 @@ int	ft_echo(t_cmd *cmd, t_shell *shell)
 	int		print_newline;
 	int		i;
 	char	**args;
-	int		original_stdout;
+	// int		original_stdout;
 	int		ret;
 	char	*env_value;
 
 	i = 1;
 	print_newline = 1;
 	args = cmd->args;
-	original_stdout = 0;
+	// original_stdout = 0;
 	ret = 0;
 	// if (cmd->outfile != NULL)
 	// {

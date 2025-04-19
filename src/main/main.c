@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   main.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: tordner <tordner@student.42.fr>            +#+  +:+       +#+        */
+/*   By: lfirmin <lfirmin@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/30 17:17:15 by lfirmin           #+#    #+#             */
-/*   Updated: 2025/04/18 13:59:47 by tordner          ###   ########.fr       */
+/*   Updated: 2025/04/19 13:54:52 by lfirmin          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,19 +30,20 @@ int	execute_builtin(t_cmd *cmd, t_shell *shell)
 		return (ft_cd(cmd, shell));
 	else if (ft_strcmp(cmd->args[0], "pwd") == 0)
 		return (ft_pwd(), 0);
-	else if (ft_strcmp(cmd->args[0], "ls") == 0)
-		return (ft_ls());
-	else if (ft_strcmp(cmd->args[0], "clear") == 0)
-		return (ft_clear());
 	else if (ft_strcmp(cmd->args[0], "exit") == 0)
 		return (shell->running = 0, 0);
-	else if (ft_strcmp(cmd->args[0], "env") == 0)
+	else if (ft_strcmp(cmd->args[0], "env") == 0) //out
 		return (ft_env(shell));
-	else if (ft_strcmp(cmd->args[0], "export") == 0)
+	else if (ft_strcmp(cmd->args[0], "export") == 0) // out
 		return (ft_export(shell, cmd));
 	else if (ft_strcmp(cmd->args[0], "unset") == 0)
 		return (ft_unset(shell, cmd));
-	return (-1);
+	else
+	{
+		int status = ft_exec(cmd, shell->env);
+		shell->exit_status = status; // Met à jour le code de retour dans la structure shell
+		return (status);
+	}
 }
 
 int	main(void)

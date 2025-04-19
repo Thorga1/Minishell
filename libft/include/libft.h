@@ -3,12 +3,13 @@
 /*                                                        :::      ::::::::   */
 /*   libft.h                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: lfirmin <marvin@42.fr>                     +#+  +:+       +#+        */
+/*   By: lfirmin <lfirmin@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/21 11:19:08 by lfirmin           #+#    #+#             */
-/*   Updated: 2024/11/08 06:07:29 by lfirmin          ###   ########.fr       */
+/*   Updated: 2025/04/19 11:56:03 by lfirmin          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
+
 #ifndef LIBFT_H
 # define LIBFT_H
 
@@ -81,6 +82,7 @@ char			**ft_split(char const *s, char c);
 char			*ft_strmapi(char const *s, char (*f)(unsigned int, char));
 char			*ft_itoa(int n);
 char			*ft_straddchar(char *str, char c);
+char			*ft_strcpy(char *dest, char *src);
 
 t_list			*ft_lstnew(void *content);
 t_list			*ft_lstlast(t_list *lst);

@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   minishell.h                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: tordner <tordner@student.42.fr>            +#+  +:+       +#+        */
+/*   By: lfirmin <lfirmin@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/30 17:17:08 by thorgal           #+#    #+#             */
-/*   Updated: 2025/04/18 13:58:08 by tordner          ###   ########.fr       */
+/*   Updated: 2025/04/19 13:22:56 by lfirmin          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,6 +23,9 @@
 # include <dirent.h>
 # include <stddef.h>
 # include <fcntl.h>
+# include <stdbool.h>
+# include <sys/types.h>
+# include <sys/wait.h>
 # include "../libft/include/libft.h"
 # include "messages.h"
 
@@ -36,7 +39,7 @@ typedef enum e_token_type
 	TOKEN_HEREDOC,				// <<
 	TOKEN_ENV_VAR,				// $VAR
 	TOKEN_UNKNOWN				// ????	
-} t_token_type;
+}	t_token_type;
 
 typedef struct s_redirection
 {
@@ -64,8 +67,6 @@ typedef struct s_shell
 int		ft_echo(t_cmd *cmd, t_shell *shell);
 int		ft_cd(t_cmd *cmd, t_shell *shell);
 void	ft_pwd(void);
-int		ft_ls(void);
-int		ft_clear(void);
 int 	ft_env(t_shell *shell);
 int 	ft_export(t_shell *shell, t_cmd *cmd);
 int 	ft_unset(t_shell *shell, t_cmd *cmd);
@@ -133,5 +134,14 @@ t_cmd	*create_new_node(void);
 void	free_cmd_list(t_cmd *cmd_list);
 int		is_redirection(char *token);
 
+// Exec
+
+int		open_file(char *file, int flags, int mode);
+int		setup_files(char **av, int *infile, int *outfile);
+void	close_files(int infile, int outfile);
+char	*find_command(char **paths, char *cmd);
+char	*get_path_env(char **envp);
+int		ft_exec(t_cmd *cmd, char **envp);
+int		execute_command(t_cmd *cmd, char **envp);
 
 #endif
