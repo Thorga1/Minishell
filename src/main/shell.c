@@ -6,7 +6,7 @@
 /*   By: lfirmin <lfirmin@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/21 15:38:19 by lfirmin           #+#    #+#             */
-/*   Updated: 2025/04/19 14:20:20 by lfirmin          ###   ########.fr       */
+/*   Updated: 2025/04/22 20:07:18 by lfirmin          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -46,9 +46,9 @@ static char	*create_standard_prompt(char *dir_name, int exit_status)
 	if (prompt)
 	{
 		if (exit_status == 0)
-			snprintf(prompt, prompt_size, GREEN PROMPT_STD, dir_name);
+			printf(prompt, prompt_size, GREEN PROMPT_STD, dir_name);
 		else
-			snprintf(prompt, prompt_size, RED PROMPT_STD, dir_name);
+			printf(prompt, prompt_size, RED PROMPT_STD, dir_name);
 	}
 	return (prompt);
 }
@@ -91,6 +91,7 @@ void	minishell_loop(t_shell *shell)
 	char	*input;
 	char	*prompt;
 
+	rl_initialize();
 	while (shell->running)
 	{
 		prompt = generate_prompt(shell);

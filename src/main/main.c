@@ -6,7 +6,7 @@
 /*   By: lfirmin <lfirmin@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/30 17:17:15 by lfirmin           #+#    #+#             */
-/*   Updated: 2025/04/22 15:16:18 by lfirmin          ###   ########.fr       */
+/*   Updated: 2025/04/22 19:52:49 by lfirmin          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,7 +17,6 @@ void	initialize_shell(t_shell *shell, char **envp)
 	shell->env = copy_env(envp);
 	shell->exit_status = 0;
 	shell->running = 1;
-	printf(WELCOME_MESS);
 }
 
 int	is_builtin(char *cmd)
