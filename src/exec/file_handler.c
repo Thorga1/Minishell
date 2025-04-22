@@ -6,7 +6,7 @@
 /*   By: lfirmin <lfirmin@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/02 16:27:31 by tordner           #+#    #+#             */
-/*   Updated: 2025/04/19 14:48:32 by lfirmin          ###   ########.fr       */
+/*   Updated: 2025/04/22 14:28:54 by lfirmin          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,28 +27,40 @@ int	open_file(char *file, int flags, int mode)
 
 int	setup_files(t_redirection *redir)
 {
-	char	*file;
+	int	fd;
 
-	if (redir->type == 1)
+	if (redir->type == 1) // Redirection d'entrée (<)
 	{
-		*file = open_file(av[1], O_RDONLY, 0);
-		if (*file == -1)
-			return (1);
-	}
-	else if (redir->type == 2)
-	{
-		*file = open_file(av[4], O_WRONLY | O_CREAT | O_TRUNC, 0644);
-		if (*file == -1)
+		fd = open(redir->file, O_RDONLY);
+		if (fd == -1)
 		{
-			close(file);
+			perror("open");
 			return (1);
 		}
+		dup2(fd, STDIN_FILENO);
+		close(fd);
 	}
-	else if (redir->type == 3)
+	else if (redir->type == 2) // Redirection de sortie (>)
 	{
-		*file = open_file(av[4], O_WRONLY | O_CREAT | O_APPEND, 0644);
-		if (*file == -1)
+		fd = open(redir->file, O_WRONLY | O_CREAT | O_TRUNC, 0644);
+		if (fd == -1)
+		{
+			perror("open");
 			return (1);
+		}
+		dup2(fd, STDOUT_FILENO);
+		close(fd);
+	}
+	else if (redir->type == 3) // Redirection en mode append (>>)
+	{
+		fd = open(redir->file, O_WRONLY | O_CREAT | O_APPEND, 0644);
+		if (fd == -1)
+		{
+			perror("open");
+			return (1);
+		}
+		dup2(fd, STDOUT_FILENO);
+		close(fd);
 	}
 	return (0);
 }

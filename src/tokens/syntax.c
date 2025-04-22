@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   syntax.c                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: thorgal <thorgal@student.42.fr>            +#+  +:+       +#+        */
+/*   By: lfirmin <lfirmin@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/25 17:40:53 by thorgal           #+#    #+#             */
-/*   Updated: 2025/03/10 17:47:13 by thorgal          ###   ########.fr       */
+/*   Updated: 2025/04/22 14:53:50 by lfirmin          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,8 +14,6 @@
 
 t_token_type	classify_token(char *token)
 {
-	if (!token || *token == '\0')
-		return (TOKEN_UNKNOWN);
 	if (ft_strcmp(token, "|") == 0)
 		return (TOKEN_PIPE);
 	if (ft_strcmp(token, ">") == 0)

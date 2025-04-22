@@ -6,7 +6,7 @@
 /*   By: lfirmin <lfirmin@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/30 17:17:08 by thorgal           #+#    #+#             */
-/*   Updated: 2025/04/19 13:22:56 by lfirmin          ###   ########.fr       */
+/*   Updated: 2025/04/22 15:17:10 by lfirmin          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,13 +32,11 @@
 typedef enum e_token_type
 {
 	TOKEN_WORD,
-	TOKEN_PIPE,
 	TOKEN_REDIRECTION_IN,		// <
 	TOKEN_REDIRECTION_OUT,		// >
 	TOKEN_APPEND,				// >>
 	TOKEN_HEREDOC,				// <<
-	TOKEN_ENV_VAR,				// $VAR
-	TOKEN_UNKNOWN				// ????	
+	TOKEN_PIPE
 }	t_token_type;
 
 typedef struct s_redirection
@@ -66,7 +64,7 @@ typedef struct s_shell
 // builtins
 int		ft_echo(t_cmd *cmd, t_shell *shell);
 int		ft_cd(t_cmd *cmd, t_shell *shell);
-void	ft_pwd(void);
+int		ft_pwd(void);
 int 	ft_env(t_shell *shell);
 int 	ft_export(t_shell *shell, t_cmd *cmd);
 int 	ft_unset(t_shell *shell, t_cmd *cmd);
@@ -111,9 +109,9 @@ void	*free_tokens(char **tokens, int count);
 
 //main	
 void	initialize_shell(t_shell *shell, char **envp);
+int		execute_command(t_cmd *cmd, t_shell *shell);
 int		execute_builtin(t_cmd *cmd, t_shell *shell);
-
-
+int		is_builtin(char *cmd);
 
 //shell
 void	minishell_loop(t_shell *shell);
@@ -137,11 +135,13 @@ int		is_redirection(char *token);
 // Exec
 
 int		open_file(char *file, int flags, int mode);
-int		setup_files(char **av, int *infile, int *outfile);
+int		setup_files(t_redirection *redir);
 void	close_files(int infile, int outfile);
 char	*find_command(char **paths, char *cmd);
 char	*get_path_env(char **envp);
-int		ft_exec(t_cmd *cmd, char **envp);
-int		execute_command(t_cmd *cmd, char **envp);
+int		ft_exec(t_cmd *cmd, t_shell *shell, char **envp);
+int		execute_ve(t_cmd *cmd, char **envp);
+int		loop_open_files(t_cmd *cmd);
+
 
 #endif

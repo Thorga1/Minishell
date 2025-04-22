@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   token_list.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: tordner <tordner@student.42.fr>            +#+  +:+       +#+        */
+/*   By: lfirmin <lfirmin@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/06 18:11:25 by tordner           #+#    #+#             */
-/*   Updated: 2025/04/18 14:02:48 by tordner          ###   ########.fr       */
+/*   Updated: 2025/04/22 14:52:04 by lfirmin          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -116,10 +116,24 @@ static int	handle_redirection(t_cmd *cmd, char **tokens, int *i)
 {
 	t_redirection	*redir;
 	int				type;
+	int				token_type;
 
-	type = classify_token(tokens[*i]);
+	token_type = classify_token(tokens[*i]);
 	if (!tokens[*i + 1])
 		return (0);
+	
+	// Conversion du type de token en type de redirection
+	if (token_type == TOKEN_REDIRECTION_IN)
+		type = 1;  // Input redirection (<)
+	else if (token_type == TOKEN_REDIRECTION_OUT)
+		type = 2;  // Output redirection (>)
+	else if (token_type == TOKEN_APPEND)
+		type = 3;  // Append redirection (>>)
+	else if (token_type == TOKEN_HEREDOC)
+		type = 4;  // Heredoc (<<)
+	else
+		type = 0;  // Pas de redirection
+	
 	redir = create_redirection_node(type, ft_strdup(tokens[*i + 1]));
 	if (!redir)
 		return (0);
@@ -150,7 +164,12 @@ t_cmd	*parse_tokens_to_list(char **tokens)
 			if (!cmd_list)
 				cmd_list = current;
 			else
-				current->next = current;
+			{
+				t_cmd *tmp = cmd_list;
+				while (tmp->next)
+					tmp = tmp->next;
+				tmp->next = current;
+			}
 		}
 		if (classify_token(tokens[i]) == TOKEN_WORD)
 		{

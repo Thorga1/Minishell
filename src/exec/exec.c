@@ -6,7 +6,7 @@
 /*   By: lfirmin <lfirmin@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/02 13:25:52 by tordner           #+#    #+#             */
-/*   Updated: 2025/04/19 14:46:04 by lfirmin          ###   ########.fr       */
+/*   Updated: 2025/04/22 15:12:35 by lfirmin          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,7 +27,7 @@ int	file_exists(const char *path)
 	return (access(path, F_OK));
 }
 
-int	execute_command(t_cmd *cmd, char **envp)
+int	execute_ve(t_cmd *cmd, char **envp)
 {
 	char	*full_path;
 	char	*path_env;
@@ -81,17 +81,16 @@ int	execute_command(t_cmd *cmd, char **envp)
 // 	execute_command(cmd, envp);
 // }
 
-void	run_child_process(t_cmd *cmd, char **envp)
+void	run_child_process(t_cmd *cmd, t_shell *shell, char **envp)
 {
-	execute_command(cmd, envp); //add parameter from data structure for return value from execve
+	execute_ve(cmd, envp); //add parameter from data structure for return value from execve
 }
 
-int	ft_exec(t_cmd *cmd, char **envp)
+int	ft_exec(t_cmd *cmd, t_shell *shell, char **envp)
 {
 	pid_t	pid;
 	int		status;
-	
-	loop_open_files(cmd);
+
 	pid = fork();
 	if (pid == -1)
 	{
@@ -99,7 +98,18 @@ int	ft_exec(t_cmd *cmd, char **envp)
 		return (1);
 	}
 	if (pid == 0)
-		run_child_process(cmd, envp);
+	{
+		// Faire les redirections uniquement dans le processus enfant
+		if (cmd->redir)
+			loop_open_files(cmd);
+		
+		run_child_process(cmd, shell, envp);
+	}
+	// Le processus parent attend sans modifier ses descripteurs
 	waitpid(pid, &status, 0);
-	return (status / 256); // Récupère le code de sortie (status / 256 est équivalent à WEXITSTATUS)
+	if (WIFEXITED(status))
+		return (WEXITSTATUS(status));
+	else if (WIFSIGNALED(status))
+		return (128 + WTERMSIG(status));
+	return (0);
 }

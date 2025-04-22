@@ -1,14 +1,14 @@
 #include "../../includes/minishell.h"
 
-void ft_pwd(void)
+int ft_pwd(void)
 {
     static char pwd[PATH_MAX];
 
     if (getcwd(pwd, PATH_MAX) == NULL)
     {
         perror("getcwd() error");
-        return ;
+        return (1);
     }
     printf("%s\n", pwd);
-    return ;
+    return (0);
 }
