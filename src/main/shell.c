@@ -6,13 +6,18 @@
 /*   By: lfirmin <lfirmin@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/21 15:38:19 by lfirmin           #+#    #+#             */
-/*   Updated: 2025/04/22 20:07:18 by lfirmin          ###   ########.fr       */
+/*   Updated: 2025/04/23 13:11:02 by lfirmin          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../includes/minishell.h"
+#include <signal.h>
+#include <termios.h>
 
-static char	*create_git_prompt(char *dir_name, int exit_status)
+static t_shell *g_shell;
+volatile sig_atomic_t g_child_running = 0;
+
+char	*create_git_prompt(char *dir_name, int exit_status)
 {
 	char	*git_branch;
 	char	*prompt;
@@ -21,7 +26,7 @@ static char	*create_git_prompt(char *dir_name, int exit_status)
 	git_branch = get_git_branch();
 	if (!git_branch)
 		return (NULL);
-	prompt_size = strlen(dir_name) + strlen(git_branch) + 100;
+	prompt_size = ft_strlen(dir_name) + ft_strlen(git_branch) + 100;
 	prompt = malloc(prompt_size);
 	if (prompt)
 	{
@@ -36,12 +41,12 @@ static char	*create_git_prompt(char *dir_name, int exit_status)
 	return (prompt);
 }
 
-static char	*create_standard_prompt(char *dir_name, int exit_status)
+char	*create_standard_prompt(char *dir_name, int exit_status)
 {
 	char	*prompt;
 	size_t	prompt_size;
 
-	prompt_size = strlen(dir_name) + 100;
+	prompt_size = ft_strlen(dir_name) + 100;
 	prompt = malloc(prompt_size);
 	if (prompt)
 	{
@@ -53,14 +58,14 @@ static char	*create_standard_prompt(char *dir_name, int exit_status)
 	return (prompt);
 }
 
-static char	*generate_prompt(t_shell *shell)
+char	*generate_prompt(t_shell *shell)
 {
 	char	*dir_name;
 	char	*prompt;
 
 	dir_name = get_current_dir_name();
 	if (!dir_name)
-		return (strdup("➜  ❯ "));
+		return (ft_strdup("➜  ❯ "));
 	if (is_git_repository())
 		prompt = create_git_prompt(dir_name, shell->exit_status);
 	else
@@ -69,10 +74,25 @@ static char	*generate_prompt(t_shell *shell)
 	if (prompt)
 		return (prompt);
 	else
-		return (strdup("➜  ❯ "));
+		return (ft_strdup("➜  ❯ "));
 }
 
-static void	handle_input(char *input, t_shell *shell)
+void sigint_handler(int sig)
+{
+	char *new_prompt;
+	if (g_child_running)
+		return;
+	write(1, "\n", 1);
+	rl_on_new_line();
+	if (g_shell)
+		g_shell->exit_status = 130;
+	new_prompt = generate_prompt(g_shell);
+	rl_set_prompt(new_prompt);
+	rl_replace_line("", 0);
+	rl_redisplay();
+}
+
+void handle_input(char *input, t_shell *shell)
 {
 	int	i;
 
@@ -88,14 +108,19 @@ static void	handle_input(char *input, t_shell *shell)
 
 void	minishell_loop(t_shell *shell)
 {
-	char	*input;
-	char	*prompt;
-
+	g_shell = shell;
+	rl_catch_signals = 0;
+	struct termios term;
+	tcgetattr(STDIN_FILENO, &term);
+	term.c_lflag &= ~ECHOCTL;
+	tcsetattr(STDIN_FILENO, TCSANOW, &term);
 	rl_initialize();
 	while (shell->running)
 	{
-		prompt = generate_prompt(shell);
-		input = readline(prompt);
+		signal(SIGINT, sigint_handler);
+		signal(SIGQUIT, SIG_IGN);
+		char	*prompt = generate_prompt(shell);
+		char	*input = readline(prompt);
 		free(prompt);
 		if (!input)
 		{

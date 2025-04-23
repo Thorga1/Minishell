@@ -1,28 +1,29 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   env.c                                              :+:      :+:    :+:   */
+/*   export_utils.c                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: lfirmin <lfirmin@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/02/04 15:49:05 by thorgal           #+#    #+#             */
-/*   Updated: 2025/04/23 11:41:46 by lfirmin          ###   ########.fr       */
+/*   Created: 2025/04/23 11:57:58 by lfirmin           #+#    #+#             */
+/*   Updated: 2025/04/23 12:01:08 by lfirmin          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "../../includes/minishell.h"
+#include "minishell.h"
 
-int	ft_env(t_shell *shell)
+int	handle_env_var(t_shell *shell, char *arg)
 {
-	int	i;
+	int	update_result;
 
-	i = 0;
-	if (!shell->env)
-		return (1);
-	while (shell->env[i])
+	update_result = update_env_var(shell->env, arg);
+	if (update_result == 0)
 	{
-		printf("%s\n", shell->env[i]);
-		i++;
+		shell->env = add_env_var(shell->env, arg);
+		if (!shell->env)
+			return (printf("export: memory allocation error\n"), 1);
 	}
+	else if (update_result == -1)
+		return (printf("export: memory allocation error\n"), 1);
 	return (0);
 }

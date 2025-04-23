@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   check_redirections.c                               :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: tordner <tordner@student.42.fr>            +#+  +:+       +#+        */
+/*   By: lfirmin <lfirmin@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/06 17:17:19 by tordner           #+#    #+#             */
-/*   Updated: 2025/04/18 13:57:59 by tordner          ###   ########.fr       */
+/*   Updated: 2025/04/23 02:50:59 by lfirmin          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,7 +20,7 @@ int	is_redirection(char *token)
 	return (type);
 }
 
-static int	check_further_redirections(char **tokens, int i)
+int	check_further_redirections(char **tokens, int i)
 {
 	if (is_redirection(tokens[i]) && !tokens[i + 1])
 	{

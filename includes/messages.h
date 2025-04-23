@@ -6,12 +6,14 @@
 /*   By: lfirmin <lfirmin@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/21 15:38:19 by lfirmin           #+#    #+#             */
-/*   Updated: 2025/04/22 20:04:28 by lfirmin          ###   ########.fr       */
+/*   Updated: 2025/04/23 12:03:40 by lfirmin          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #ifndef MESSAGES_H
 # define MESSAGES_H
+
+#include "minishell.h"
 
 # define RED "\001\033[1;31m\002"
 # define GREEN "\001\033[1;32m\002"

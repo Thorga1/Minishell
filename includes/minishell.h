@@ -1,18 +1,9 @@
-/* ************************************************************************** */
-/*                                                                            */
-/*                                                        :::      ::::::::   */
-/*   minishell.h                                        :+:      :+:    :+:   */
-/*                                                    +:+ +:+         +:+     */
-/*   By: lfirmin <lfirmin@student.42.fr>            +#+  +:+       +#+        */
-/*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/01/30 17:17:08 by thorgal           #+#    #+#             */
-/*   Updated: 2025/04/22 15:17:10 by lfirmin          ###   ########.fr       */
-/*                                                                            */
-/* ************************************************************************** */
-
 #ifndef MINISHELL_H
 # define MINISHELL_H
 
+////////////////////////////////////////////////////////////////
+////////////////////////////INCLUDES////////////////////////////
+////////////////////////////////////////////////////////////////
 # include <stdio.h>
 # include <stdlib.h>
 # include <string.h>
@@ -29,6 +20,9 @@
 # include "../libft/include/libft.h"
 # include "messages.h"
 
+////////////////////////////////////////////////////////////////
+////////////////////////////ENUM////////////////////////////////
+////////////////////////////////////////////////////////////////
 typedef enum e_token_type
 {
 	TOKEN_WORD,
@@ -39,9 +33,12 @@ typedef enum e_token_type
 	TOKEN_PIPE
 }	t_token_type;
 
+////////////////////////////////////////////////////////////////
+////////////////////////////DATA////////////////////////////////
+////////////////////////////////////////////////////////////////
 typedef struct s_redirection
 {
-	int						type; // 1 = input, 2 = output, 3 = append, 0 = none
+	int						type;
 	char					*file;
 	struct s_redirection	*next;
 } t_redirection;
@@ -53,84 +50,177 @@ typedef struct s_cmd
 	struct s_cmd	*next;
 } t_cmd;
 
-
 typedef struct s_shell
 {
-	char    **env;			// Environment variables
-	int     exit_status;	// Exit status of the last command
-	int     running;		// Running flag
+	char    **env;
+	int     exit_status;
+	int     running;
 } t_shell;
 
-// builtins
-int		ft_echo(t_cmd *cmd, t_shell *shell);
-int		ft_cd(t_cmd *cmd, t_shell *shell);
-int		ft_pwd(void);
-int 	ft_env(t_shell *shell);
-int 	ft_export(t_shell *shell, t_cmd *cmd);
-int 	ft_unset(t_shell *shell, t_cmd *cmd);
+////////////////////////////////////////////////////////////////
+////////////////////////////MAIN////////////////////////////////
+////////////////////////////////////////////////////////////////
 
-//check_pipes
-int		validate_pipes(char **tokens);
+////////////////////
+///////main.c///////
+////////////////////
+void			initialize_shell(t_shell *shell, char **envp);
+int				execute_command(t_cmd *cmd, t_shell *shell);
+int				execute_builtin(t_cmd *cmd, t_shell *shell);
+int				is_builtin(char *cmd);
+int				main(void);
 
-//check_redirections
-int		validate_redirections(char **tokens);
+////////////////////
+///////input.c//////
+////////////////////
+char			**parse_input(char *input, t_shell *shell);
+void			process_input(char *input, t_shell *shell);
 
-//syntax
-int		validate_syntax(char **tokens);
+/////////////////////
+///////shell.c///////
+/////////////////////
+void			minishell_loop(t_shell *shell);	
+void			sigint_handler(int sig);
+void			handle_input(char *input, t_shell *shell);
+char			*generate_prompt(t_shell *shell);
+char			*create_git_prompt(char *dir_name, int exit_status);
+char			*create_standard_prompt(char *dir_name, int exit_status);
 
-//token_list
-t_cmd	*parse_tokens_to_list(char **tokens);
-t_cmd	*create_new_node(void);
-void	free_cmd_list(t_cmd *cmd_list);
 
-//token_utils
-void	*free_tokens(char **tokens, int count);
-int		extract_quoted_token(char *input, int *index, char quote_char);
-int		is_delimiter(char c);
-int		is_special(char c);
-void	skip_delimiters(char *str, int *i);
+/////////////////////////////////////////////////////////////////
+////////////////////////////UTILS////////////////////////////////
+/////////////////////////////////////////////////////////////////
 
-//token
-int		count_tokens(char *str);
-char	*extract_token(char *input, int *index);
-int		check_quotes(char *input);
-char	**tokenize_command(char *input);
+////////////////////
+///////utils.c//////
+////////////////////
+char			*get_current_dir_name(void);
+char			*ft_get_env_var(char **env, char *var);
+char			**copy_env(char **envp);
+int				is_git_repository(void);
+char			*get_git_branch(void);
 
-//utils
-char	*get_current_dir_name(void);
-char	*ft_get_env_var(char **env, char *var);
-char	**copy_env(char **envp);
-int		is_git_repository(void);
-char	*get_git_branch(void);
+////////////////////
+///////free.c///////
+////////////////////
+void			*free_tokens(char **tokens, int count);
 
-//free
-void	free_cmd_list(t_cmd *cmd_list);
-void	*free_tokens(char **tokens, int count);
+/////////////////////////////////////////////////////////////////
+////////////////////////////BULTINS//////////////////////////////
+/////////////////////////////////////////////////////////////////
 
-//main	
-void	initialize_shell(t_shell *shell, char **envp);
-int		execute_command(t_cmd *cmd, t_shell *shell);
-int		execute_builtin(t_cmd *cmd, t_shell *shell);
-int		is_builtin(char *cmd);
+///////////////////
+///////pwd.c///////
+///////////////////
+int				ft_pwd(void);
 
-//shell
-void	minishell_loop(t_shell *shell);
+//////////////////
+///////cd.c///////
+//////////////////
+int				ft_cd(t_cmd *cmd, t_shell *shell);
 
-//input
-char	**parse_input(char *input, t_shell *shell);
-void	process_input(char *input, t_shell *shell);
+//////////////////
+///////env.c//////
+//////////////////
+int				ft_env(t_shell *shell);
 
-// Token Syntax
-t_token_type	classify_token(char *token);
+//////////////////
+///////export.c///
+//////////////////
+int				ft_export(t_shell *shell, t_cmd *cmd);
+int				process_export_args(t_shell *shell, char **args, int i);
+int				update_env_var(char **env, char *var);
+char			**add_env_var(char **env, char *new_var);
+int				is_valid_identifier(char *str);
+
+//////////////////
+///////unset.c////
+//////////////////
+int				delete_line(char **array, int index);
+int				find_env_var(char **env, char *var);
+int				ft_unset(t_shell *shell, t_cmd *cmd);
+
+//////////////////
+///////echo.c/////
+//////////////////
+char			*get_env_value(char *var_name, t_shell *shell);
+int				is_env_var(char *str);
+void			print_echo_args(char **args, int i, t_shell *shell, int first);
+int				ft_echo(t_cmd *cmd, t_shell *shell);
+
+/////////////////////////
+///////export_utils.c////
+/////////////////////////
+int				handle_env_var(t_shell *shell, char *arg);
+
+
+/////////////////////////////////////////////////////////////////
+////////////////////////////TOKENS///////////////////////////////
+/////////////////////////////////////////////////////////////////
+
+///////////////////////////
+///////check_pipes.c///////
+///////////////////////////
+int				check_before_pipe(char **tokens);
+int				pipe_sequence_invalid(char **tokens);
 int				validate_pipes(char **tokens);
-int				validate_syntax(char **tokens);
+
+//////////////////////////////////
+///////check_redirections.c///////
+//////////////////////////////////
+int				is_redirection(char *token);
+int				check_further_redirections(char **tokens, int i);
 int				validate_redirections(char **tokens);
 
-// Token List
-t_cmd	*parse_tokens_to_list(char **tokens);
-t_cmd	*create_new_node(void);
-void	free_cmd_list(t_cmd *cmd_list);
-int		is_redirection(char *token);
+//////////////////////
+///////syntax.c///////
+//////////////////////
+t_token_type	classify_token(char *token);
+int				validate_syntax(char **tokens);
+
+//////////////////////////
+///////token_list.c///////
+//////////////////////////
+void 			free_cmd_node(t_cmd *cmd);
+t_cmd			*create_command_node(void);
+t_redirection	*create_redirection_node(int type, char *file);
+int				add_argument(t_cmd *cmd, char *arg);
+void			add_redirection(t_cmd *cmd, t_redirection *redir);
+
+///////////////////////////
+///////token_list2.c///////
+///////////////////////////
+int				handle_redirection(t_cmd *cmd, char **tokens, int *i);
+t_cmd			*init_cmd_segment(t_cmd **cmd_list, char **tokens, int *i);
+int				add_token_to_cmd(t_cmd *current, char **tokens, int *i);
+t_cmd			*parse_tokens_to_list(char **tokens);
+void			free_cmd_list(t_cmd *cmd_list);
+
+///////////////////////////
+///////token_utils.c///////
+///////////////////////////
+int				count_tokens(char *str);
+int				handle_quoted_token(char *input, int *index, int *start);
+int				handle_special_token(char *input, int *index);
+void			handle_quoted_count(char *str, int *i, char quote);
+void			handle_special_count(char *str, int *i);
+
+////////////////////
+///////token.c//////
+////////////////////
+int				extract_quoted_token(char *input, int *index, char quote_char);
+int				is_delimiter(char c);
+int				is_special(char c);
+void			skip_delimiters(char *str, int *i);
+
+///////////////////////////
+///////token_utils2.c//////
+///////////////////////////
+int				extract_token_len(char *input, int *index, int *start);
+char			*extract_token(char *input, int *index);
+int				check_quotes(char *input);
+char			**tokenize_command(char *input);	
+void			handle_word_count(char *str, int *i);
 
 // Exec
 
@@ -142,6 +232,6 @@ char	*get_path_env(char **envp);
 int		ft_exec(t_cmd *cmd, t_shell *shell, char **envp);
 int		execute_ve(t_cmd *cmd, char **envp);
 int		loop_open_files(t_cmd *cmd);
-
+int		handle_heredoc(char *delim);
 
 #endif

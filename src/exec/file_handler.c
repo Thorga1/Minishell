@@ -6,7 +6,7 @@
 /*   By: lfirmin <lfirmin@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/02 16:27:31 by tordner           #+#    #+#             */
-/*   Updated: 2025/04/22 14:28:54 by lfirmin          ###   ########.fr       */
+/*   Updated: 2025/04/23 01:17:43 by lfirmin          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -61,6 +61,11 @@ int	setup_files(t_redirection *redir)
 		}
 		dup2(fd, STDOUT_FILENO);
 		close(fd);
+	}
+	else if (redir->type == 4) // Heredoc (<<)
+	{
+		if (handle_heredoc(redir->file) != 0)
+			return (1);
 	}
 	return (0);
 }

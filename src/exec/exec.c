@@ -6,11 +6,13 @@
 /*   By: lfirmin <lfirmin@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/02 13:25:52 by tordner           #+#    #+#             */
-/*   Updated: 2025/04/22 15:12:35 by lfirmin          ###   ########.fr       */
+/*   Updated: 2025/04/23 03:02:28 by lfirmin          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../../includes/minishell.h"
+#include <signal.h>
+extern volatile sig_atomic_t g_child_running;
 
 int	setup_pipe(int pipefd[2])
 {
@@ -83,6 +85,9 @@ int	execute_ve(t_cmd *cmd, char **envp)
 
 void	run_child_process(t_cmd *cmd, t_shell *shell, char **envp)
 {
+	// Dans l'enfant, restaurer le comportement par défaut des signaux
+	signal(SIGINT, SIG_DFL);
+	signal(SIGQUIT, SIG_DFL);
 	execute_ve(cmd, envp); //add parameter from data structure for return value from execve
 }
 
@@ -91,6 +96,8 @@ int	ft_exec(t_cmd *cmd, t_shell *shell, char **envp)
 	pid_t	pid;
 	int		status;
 
+	// Indique qu'un child est en cours
+	g_child_running = 1;
 	pid = fork();
 	if (pid == -1)
 	{
@@ -107,6 +114,8 @@ int	ft_exec(t_cmd *cmd, t_shell *shell, char **envp)
 	}
 	// Le processus parent attend sans modifier ses descripteurs
 	waitpid(pid, &status, 0);
+	// Child terminé, revient en mode prompt
+	g_child_running = 0;
 	if (WIFEXITED(status))
 		return (WEXITSTATUS(status));
 	else if (WIFSIGNALED(status))
