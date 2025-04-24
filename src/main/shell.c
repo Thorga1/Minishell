@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   shell.c                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: lfirmin <lfirmin@student.42.fr>            +#+  +:+       +#+        */
+/*   By: tordner <tordner@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/21 15:38:19 by lfirmin           #+#    #+#             */
-/*   Updated: 2025/04/23 13:11:02 by lfirmin          ###   ########.fr       */
+/*   Updated: 2025/04/24 15:59:45 by tordner          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -108,9 +108,12 @@ void handle_input(char *input, t_shell *shell)
 
 void	minishell_loop(t_shell *shell)
 {
+	struct termios term;
+	char	*prompt;
+	char	*input;
+
 	g_shell = shell;
 	rl_catch_signals = 0;
-	struct termios term;
 	tcgetattr(STDIN_FILENO, &term);
 	term.c_lflag &= ~ECHOCTL;
 	tcsetattr(STDIN_FILENO, TCSANOW, &term);
@@ -119,8 +122,8 @@ void	minishell_loop(t_shell *shell)
 	{
 		signal(SIGINT, sigint_handler);
 		signal(SIGQUIT, SIG_IGN);
-		char	*prompt = generate_prompt(shell);
-		char	*input = readline(prompt);
+		prompt = generate_prompt(shell);
+		input = readline(prompt);
 		free(prompt);
 		if (!input)
 		{

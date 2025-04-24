@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   input.c                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: lfirmin <lfirmin@student.42.fr>            +#+  +:+       +#+        */
+/*   By: tordner <tordner@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/30 17:17:15 by lfirmin           #+#    #+#             */
-/*   Updated: 2025/04/22 15:17:37 by lfirmin          ###   ########.fr       */
+/*   Updated: 2025/04/24 16:11:29 by tordner          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -48,7 +48,7 @@ void	process_input(char *input, t_shell *shell)
 	cmd_list = parse_tokens_to_list(tokens);
 	if (cmd_list)
 	{
-		ret = execute_command(cmd_list, shell);
+		ret = execute_pipeline(cmd_list, shell);
 		if (ret == -1)
 		{
 			printf(ERROR_NOT_FOUND, cmd_list->args[0]);

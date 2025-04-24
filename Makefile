@@ -3,10 +3,10 @@
 #                                                         :::      ::::::::    #
 #    Makefile                                           :+:      :+:    :+:    #
 #                                                     +:+ +:+         +:+      #
-#    By: lfirmin <lfirmin@student.42.fr>            +#+  +:+       +#+         #
+#    By: tordner <tordner@student.42.fr>            +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2025/01/29 17:32:15 by thorgal           #+#    #+#              #
-#    Updated: 2025/04/23 12:01:16 by lfirmin          ###   ########.fr        #
+#    Updated: 2025/04/24 16:02:37 by tordner          ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -43,9 +43,11 @@ SRCS = 	$(SRCDIR)/main/main.c \
 		$(SRCDIR)/exec/file_handler.c \
 		$(SRCDIR)/exec/get_env.c \
 		$(SRCDIR)/exec/heredoc.c \
+		$(SRCDIR)/exec/pipe.c \
 		$(SRCDIR)/tokens/tokens_list2.c \
 		$(SRCDIR)/tokens/tokens_utils2.c \
 		$(SRCDIR)/builtins/export_utils.c
+	
 OBJS = $(SRCS:$(SRCDIR)/%.c=$(OBJDIR)/%.o)
 
 OBJSUBDIRS = $(sort $(dir $(OBJS)))

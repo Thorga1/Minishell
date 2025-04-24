@@ -3,15 +3,16 @@
 /*                                                        :::      ::::::::   */
 /*   exec.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: lfirmin <lfirmin@student.42.fr>            +#+  +:+       +#+        */
+/*   By: tordner <tordner@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/02 13:25:52 by tordner           #+#    #+#             */
-/*   Updated: 2025/04/23 03:02:28 by lfirmin          ###   ########.fr       */
+/*   Updated: 2025/04/24 15:54:31 by tordner          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../../includes/minishell.h"
 #include <signal.h>
+
 extern volatile sig_atomic_t g_child_running;
 
 int	setup_pipe(int pipefd[2])
@@ -62,26 +63,6 @@ int	execute_ve(t_cmd *cmd, char **envp)
 	write(1, "Error: Command execution failed\n", 32);
 	exit(126); // Quitter le processus enfant avec code 126 (commande non exécutable)
 }
-
-// void	run_child_process(int pipefd[2], int infile, t_cmd *cmd, char **envp)
-// {
-// 	close(pipefd[0]);
-// 	dup2(infile, 0);
-// 	dup2(pipefd[1], 1);
-// 	close(infile);
-// 	close(pipefd[1]);
-// 	execute_command(cmd, envp);
-// }
-
-// void	run_parent_process(int pipefd[2], int outfile, t_cmd *cmd, char **envp)
-// {
-// 	close(pipefd[1]);
-// 	dup2(pipefd[0], 0);
-// 	dup2(outfile, 1);
-// 	close(pipefd[0]);
-// 	close(outfile);
-// 	execute_command(cmd, envp);
-// }
 
 void	run_child_process(t_cmd *cmd, t_shell *shell, char **envp)
 {

@@ -233,5 +233,7 @@ int		ft_exec(t_cmd *cmd, t_shell *shell, char **envp);
 int		execute_ve(t_cmd *cmd, char **envp);
 int		loop_open_files(t_cmd *cmd);
 int		handle_heredoc(char *delim);
+int		execute_pipeline(t_cmd *cmd_list, t_shell *shell);
+
 
 #endif
