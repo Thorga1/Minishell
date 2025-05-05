@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   main.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: tordner <tordner@student.42.fr>            +#+  +:+       +#+        */
+/*   By: thorgal <thorgal@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/30 17:17:15 by lfirmin           #+#    #+#             */
-/*   Updated: 2025/04/24 16:01:52 by tordner          ###   ########.fr       */
+/*   Updated: 2025/05/05 15:13:13 by thorgal          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -71,7 +71,7 @@ int	execute_command(t_cmd *cmd, t_shell *shell)
 		close(saved_stdout);
 	}
 	else
-		shell->exit_status = ft_exec(cmd, shell, shell->env);
+		shell->exit_status = ft_exec(cmd, shell->env);
 	return (shell->exit_status);
 }
 

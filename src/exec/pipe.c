@@ -6,7 +6,7 @@
 /*   By: thorgal <thorgal@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/02 13:25:59 by tordner           #+#    #+#             */
-/*   Updated: 2025/05/05 15:03:08 by thorgal          ###   ########.fr       */
+/*   Updated: 2025/05/05 15:10:55 by thorgal          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -102,7 +102,6 @@ static void	exec_parent(int *infile, int pipefd[2], t_cmd *cmd)
 		*infile = pipefd[0];
 	}
 }
-
 
 static void	spawn_processes(t_cmd *cmd, t_shell *shell, int infile)
 {

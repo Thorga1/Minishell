@@ -6,7 +6,7 @@
 /*   By: thorgal <thorgal@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/05 15:00:11 by thorgal           #+#    #+#             */
-/*   Updated: 2025/05/05 15:07:37 by thorgal          ###   ########.fr       */
+/*   Updated: 2025/05/05 15:21:16 by thorgal          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -246,6 +246,7 @@ int		execute_ve(t_cmd *cmd, char **envp);
 int		loop_open_files(t_cmd *cmd);
 int		handle_heredoc(char *delim);
 int		execute_pipeline(t_cmd *cmd_list, t_shell *shell);
+char *execute_ve_2(t_cmd *cmd, char	*path_env, char	*full_path);
 
 
 #endif

@@ -6,7 +6,7 @@
 /*   By: thorgal <thorgal@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/21 15:38:19 by lfirmin           #+#    #+#             */
-/*   Updated: 2025/05/05 15:06:14 by thorgal          ###   ########.fr       */
+/*   Updated: 2025/05/05 15:31:10 by thorgal          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -51,9 +51,9 @@ char	*create_standard_prompt(char *dir_name, int exit_status)
 	if (prompt)
 	{
 		if (exit_status == 0)
-			printf(prompt, prompt_size, GREEN PROMPT_STD, dir_name);
+			snprintf(prompt, prompt_size, GREEN PROMPT_STD, dir_name);
 		else
-			printf(prompt, prompt_size, RED PROMPT_STD, dir_name);
+			snprintf(prompt, prompt_size, RED PROMPT_STD, dir_name);
 	}
 	return (prompt);
 }
