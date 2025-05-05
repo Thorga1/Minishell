@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   shell.c                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: thorgal <thorgal@student.42.fr>            +#+  +:+       +#+        */
+/*   By: lfirmin <lfirmin@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/21 15:38:19 by lfirmin           #+#    #+#             */
-/*   Updated: 2025/05/05 15:31:10 by thorgal          ###   ########.fr       */
+/*   Updated: 2025/05/05 15:41:26 by lfirmin          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,21 +21,61 @@ char	*create_git_prompt(char *dir_name, int exit_status)
 {
 	char	*git_branch;
 	char	*prompt;
-	size_t	prompt_size;
+	char	*tmp1;
+	char	*tmp2;
 
 	git_branch = get_git_branch();
 	if (!git_branch)
 		return (NULL);
-	prompt_size = ft_strlen(dir_name) + ft_strlen(git_branch) + 100;
-	prompt = malloc(prompt_size);
-	if (prompt)
+	if (exit_status == 0)
 	{
-		if (exit_status == 0)
-			snprintf(prompt, prompt_size, GREEN PROMPT_GIT, \
-					dir_name, git_branch);
-		else
-			snprintf(prompt, prompt_size, RED PROMPT_GIT, \
-					dir_name, git_branch);
+		tmp1 = ft_strjoin(GREEN "➜\033[0m  \033[1;36m", dir_name);
+		if (!tmp1)
+		{
+			free(git_branch);
+			return (NULL);
+		}
+		tmp2 = ft_strjoin(tmp1, "\033[0m \033[1;32mgit:(\033[1;31m");
+		free(tmp1);
+		if (!tmp2)
+		{
+			free(git_branch);
+			return (NULL);
+		}
+		tmp1 = ft_strjoin(tmp2, git_branch);
+		free(tmp2);
+		if (!tmp1)
+		{
+			free(git_branch);
+			return (NULL);
+		}
+		prompt = ft_strjoin(tmp1, "\033[1;32m)\033[0m ❯ ");
+		free(tmp1);
+	}
+	else
+	{
+		tmp1 = ft_strjoin(RED "➜\033[0m  \033[1;36m", dir_name);
+		if (!tmp1)
+		{
+			free(git_branch);
+			return (NULL);
+		}
+		tmp2 = ft_strjoin(tmp1, "\033[0m \033[1;32mgit:(\033[1;31m");
+		free(tmp1);
+		if (!tmp2)
+		{
+			free(git_branch);
+			return (NULL);
+		}
+		tmp1 = ft_strjoin(tmp2, git_branch);
+		free(tmp2);
+		if (!tmp1)
+		{
+			free(git_branch);
+			return (NULL);
+		}
+		prompt = ft_strjoin(tmp1, "\033[1;32m)\033[0m ❯ ");
+		free(tmp1);
 	}
 	free(git_branch);
 	return (prompt);
@@ -44,16 +84,23 @@ char	*create_git_prompt(char *dir_name, int exit_status)
 char	*create_standard_prompt(char *dir_name, int exit_status)
 {
 	char	*prompt;
-	size_t	prompt_size;
+	char	*tmp;
 
-	prompt_size = ft_strlen(dir_name) + 100;
-	prompt = malloc(prompt_size);
-	if (prompt)
+	if (exit_status == 0)
 	{
-		if (exit_status == 0)
-			snprintf(prompt, prompt_size, GREEN PROMPT_STD, dir_name);
-		else
-			snprintf(prompt, prompt_size, RED PROMPT_STD, dir_name);
+		tmp = ft_strjoin(GREEN "➜\033[0m  \033[1;36m", dir_name);
+		if (!tmp)
+			return (NULL);
+		prompt = ft_strjoin(tmp, "\033[0m ❯ ");
+		free(tmp);
+	}
+	else
+	{
+		tmp = ft_strjoin(RED "➜\033[0m  \033[1;36m", dir_name);
+		if (!tmp)
+			return (NULL);
+		prompt = ft_strjoin(tmp, "\033[0m ❯ ");
+		free(tmp);
 	}
 	return (prompt);
 }

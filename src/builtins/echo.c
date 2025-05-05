@@ -6,7 +6,7 @@
 /*   By: lfirmin <lfirmin@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/30 17:17:08 by thorgal           #+#    #+#             */
-/*   Updated: 2025/04/23 11:45:01 by lfirmin          ###   ########.fr       */
+/*   Updated: 2025/05/05 15:51:13 by lfirmin          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -76,7 +76,7 @@ int	ft_echo(t_cmd *cmd, t_shell *shell)
 	i = 1;
 	print_newline = 1;
 	args = cmd->args;
-	if (args[i] && strcmp(args[i], "-n") == 0)
+	if (args[i] && ft_strcmp(args[i], "-n") == 0)
 	{
 		print_newline = 0;
 		i++;

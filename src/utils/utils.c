@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   utils.c                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: tordner <tordner@student.42.fr>            +#+  +:+       +#+        */
+/*   By: lfirmin <lfirmin@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/04 15:49:05 by thorgal           #+#    #+#             */
-/*   Updated: 2025/04/18 14:01:00 by tordner          ###   ########.fr       */
+/*   Updated: 2025/05/05 15:45:00 by lfirmin          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -102,7 +102,7 @@ char	*get_git_branch(void)
 	if (fgets(line, sizeof(line), fp) != NULL)
 	{
 		line[strcspn(line, "\n")] = 0;
-		branch = strdup(line);
+		branch = ft_strdup(line);
 	}
 	pclose(fp);
 	return (branch);
