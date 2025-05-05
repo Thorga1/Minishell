@@ -3,10 +3,10 @@
 #                                                         :::      ::::::::    #
 #    Makefile                                           :+:      :+:    :+:    #
 #                                                     +:+ +:+         +:+      #
-#    By: tordner <tordner@student.42.fr>            +#+  +:+       +#+         #
+#    By: thorgal <thorgal@student.42.fr>            +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2025/01/29 17:32:15 by thorgal           #+#    #+#              #
-#    Updated: 2025/04/24 16:02:37 by tordner          ###   ########.fr        #
+#    Updated: 2025/05/05 15:00:37 by thorgal          ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -14,7 +14,7 @@ NAME = minishell
 
 CC = cc
 
-CFLAGS = -pthread -Iincludes
+CFLAGS = -pthread -Iincludes -Wall -Wextra -Wextra
 
 SRCDIR = src
 LIBFT = libft.a

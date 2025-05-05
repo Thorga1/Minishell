@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   exec.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: tordner <tordner@student.42.fr>            +#+  +:+       +#+        */
+/*   By: thorgal <thorgal@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/02 13:25:52 by tordner           #+#    #+#             */
-/*   Updated: 2025/04/24 15:54:31 by tordner          ###   ########.fr       */
+/*   Updated: 2025/05/05 15:07:24 by thorgal          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -35,17 +35,17 @@ int	execute_ve(t_cmd *cmd, char **envp)
 	char	*full_path;
 	char	*path_env;
 
-	if (cmd->args[0][0] == '/' || cmd->args[0][0] == '.') // Chemin absolu ou relatif
+	if (cmd->args[0][0] == '/' || cmd->args[0][0] == '.')
 	{
 		if (file_exists(cmd->args[0]) != 0)
 		{
 			write(1, "Error: No such file or directory !\n", 36);
-			exit(127); // Quitter le processus enfant avec code 127 (commande non trouvée)
+			exit(127);
 		}
 		else if (access(cmd->args[0], X_OK) == 0)
 			execve(cmd->args[0], cmd->args, envp);
 		write(1, "Error: execve error !\n", 23);
-		exit(127); // Quitter le processus enfant avec code 127 (commande non trouvée)
+		exit(127);
 	}
 	path_env = get_path_env(envp);
 	if (!path_env)
@@ -61,23 +61,21 @@ int	execute_ve(t_cmd *cmd, char **envp)
 	}
 	execve(full_path, cmd->args, envp);
 	write(1, "Error: Command execution failed\n", 32);
-	exit(126); // Quitter le processus enfant avec code 126 (commande non exécutable)
+	exit(126);
 }
 
-void	run_child_process(t_cmd *cmd, t_shell *shell, char **envp)
+void	run_child_process(t_cmd *cmd, char **envp)
 {
-	// Dans l'enfant, restaurer le comportement par défaut des signaux
 	signal(SIGINT, SIG_DFL);
 	signal(SIGQUIT, SIG_DFL);
-	execute_ve(cmd, envp); //add parameter from data structure for return value from execve
+	execute_ve(cmd, envp);
 }
 
-int	ft_exec(t_cmd *cmd, t_shell *shell, char **envp)
+int	ft_exec(t_cmd *cmd, char **envp)
 {
 	pid_t	pid;
 	int		status;
 
-	// Indique qu'un child est en cours
 	g_child_running = 1;
 	pid = fork();
 	if (pid == -1)
@@ -87,15 +85,12 @@ int	ft_exec(t_cmd *cmd, t_shell *shell, char **envp)
 	}
 	if (pid == 0)
 	{
-		// Faire les redirections uniquement dans le processus enfant
 		if (cmd->redir)
 			loop_open_files(cmd);
 		
-		run_child_process(cmd, shell, envp);
+		run_child_process(cmd, envp);
 	}
-	// Le processus parent attend sans modifier ses descripteurs
 	waitpid(pid, &status, 0);
-	// Child terminé, revient en mode prompt
 	g_child_running = 0;
 	if (WIFEXITED(status))
 		return (WEXITSTATUS(status));

@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   shell.c                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: tordner <tordner@student.42.fr>            +#+  +:+       +#+        */
+/*   By: thorgal <thorgal@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/21 15:38:19 by lfirmin           #+#    #+#             */
-/*   Updated: 2025/04/24 15:59:45 by tordner          ###   ########.fr       */
+/*   Updated: 2025/05/05 15:06:14 by thorgal          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -80,6 +80,8 @@ char	*generate_prompt(t_shell *shell)
 void sigint_handler(int sig)
 {
 	char *new_prompt;
+
+	(void)sig;
 	if (g_child_running)
 		return;
 	write(1, "\n", 1);
@@ -115,7 +117,7 @@ void	minishell_loop(t_shell *shell)
 	g_shell = shell;
 	rl_catch_signals = 0;
 	tcgetattr(STDIN_FILENO, &term);
-	term.c_lflag &= ~ECHOCTL;
+	// term.c_lflag &= ~ECHOCTL;
 	tcsetattr(STDIN_FILENO, TCSANOW, &term);
 	rl_initialize();
 	while (shell->running)

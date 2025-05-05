@@ -1,3 +1,15 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   minishell.h                                        :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: thorgal <thorgal@student.42.fr>            +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2025/05/05 15:00:11 by thorgal           #+#    #+#             */
+/*   Updated: 2025/05/05 15:07:37 by thorgal          ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #ifndef MINISHELL_H
 # define MINISHELL_H
 
@@ -229,7 +241,7 @@ int		setup_files(t_redirection *redir);
 void	close_files(int infile, int outfile);
 char	*find_command(char **paths, char *cmd);
 char	*get_path_env(char **envp);
-int		ft_exec(t_cmd *cmd, t_shell *shell, char **envp);
+int		ft_exec(t_cmd *cmd, char **envp);
 int		execute_ve(t_cmd *cmd, char **envp);
 int		loop_open_files(t_cmd *cmd);
 int		handle_heredoc(char *delim);
