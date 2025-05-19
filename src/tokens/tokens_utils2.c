@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   tokens_utils2.c                                    :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: lfirmin <lfirmin@student.42.fr>            +#+  +:+       +#+        */
+/*   By: tordner <tordner@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/23 03:25:24 by lfirmin           #+#    #+#             */
-/*   Updated: 2025/04/23 03:31:49 by lfirmin          ###   ########.fr       */
+/*   Updated: 2025/05/19 11:38:03 by tordner          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -50,25 +50,21 @@ char	*extract_token(char *input, int *index)
 
 int	check_quotes(char *input)
 {
-	int	i;
-	int	count_single;
-	int	count_double;
+	bool	in_squote = false;
+	bool	in_dquote = false;
+	int		i = 0;
 
-	i = 0;
-	count_double = 0;
-	count_single = 0;
 	while (input[i])
 	{
-		if (input[i] == '\"')
-			count_double++;
-		else if (input[i] == '\'')
-			count_single++;
+		if (input[i] == '\'' && !in_dquote)
+			in_squote = !in_squote;
+		else if (input[i] == '"' && !in_squote)
+			in_dquote = !in_dquote;
 		i++;
 	}
-	if (count_double % 2 != 0 || count_single % 2 != 0)
+	if (in_squote || in_dquote)
 		return (1);
-	else
-		return (0);
+	return (0);
 }
 
 char	**tokenize_command(char *input)
