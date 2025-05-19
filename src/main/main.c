@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   main.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: thorgal <thorgal@student.42.fr>            +#+  +:+       +#+        */
+/*   By: lfirmin <lfirmin@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/30 17:17:15 by lfirmin           #+#    #+#             */
-/*   Updated: 2025/05/05 15:13:13 by thorgal          ###   ########.fr       */
+/*   Updated: 2025/05/19 07:41:42 by lfirmin          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -41,9 +41,9 @@ int	execute_builtin(t_cmd *cmd, t_shell *shell)
 	else if (ft_strcmp(cmd->args[0], "pwd") == 0)
 		return (ft_pwd());
 	else if (ft_strcmp(cmd->args[0], "exit") == 0)
-		return (shell->running = 0);
+		return (ft_exit(cmd, shell));
 	else if (ft_strcmp(cmd->args[0], "env") == 0)
-		return (ft_env(shell));
+		return (ft_env(shell, cmd));
 	else if (ft_strcmp(cmd->args[0], "export") == 0)
 		return (ft_export(shell, cmd));
 	else if (ft_strcmp(cmd->args[0], "unset") == 0)

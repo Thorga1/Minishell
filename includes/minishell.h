@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   minishell.h                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: thorgal <thorgal@student.42.fr>            +#+  +:+       +#+        */
+/*   By: root <root@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/05 15:00:11 by thorgal           #+#    #+#             */
-/*   Updated: 2025/05/05 15:21:16 by thorgal          ###   ########.fr       */
+/*   Updated: 2025/05/19 10:55:58 by root             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,6 +30,8 @@
 # include <sys/types.h>
 # include <sys/wait.h>
 # include "../libft/include/libft.h"
+# include <signal.h>
+# include <termios.h>
 # include "messages.h"
 
 ////////////////////////////////////////////////////////////////
@@ -134,7 +136,7 @@ int				ft_cd(t_cmd *cmd, t_shell *shell);
 //////////////////
 ///////env.c//////
 //////////////////
-int				ft_env(t_shell *shell);
+int				ft_env(t_shell *shell, t_cmd *cmd);
 
 //////////////////
 ///////export.c///
@@ -164,6 +166,7 @@ int				ft_echo(t_cmd *cmd, t_shell *shell);
 ///////export_utils.c////
 /////////////////////////
 int				handle_env_var(t_shell *shell, char *arg);
+char			*handle_quotes_in_env_var(char *arg);
 
 
 /////////////////////////////////////////////////////////////////
@@ -246,7 +249,8 @@ int		execute_ve(t_cmd *cmd, char **envp);
 int		loop_open_files(t_cmd *cmd);
 int		handle_heredoc(char *delim);
 int		execute_pipeline(t_cmd *cmd_list, t_shell *shell);
-char *execute_ve_2(t_cmd *cmd, char	*path_env, char	*full_path);
+char 	*execute_ve_2(t_cmd *cmd, char	*path_env, char	*full_path);
+int		ft_exit(t_cmd *cmd, t_shell *shell);
 
 
 #endif

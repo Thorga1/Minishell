@@ -6,7 +6,7 @@
 /*   By: lfirmin <lfirmin@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/04 15:49:05 by thorgal           #+#    #+#             */
-/*   Updated: 2025/05/05 15:45:00 by lfirmin          ###   ########.fr       */
+/*   Updated: 2025/05/06 21:52:51 by lfirmin          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -69,41 +69,41 @@ char	**copy_env(char **envp)
 	return (env);
 }
 
-int	is_git_repository(void)
-{
-	FILE	*fp;
-	int		result;
-	char	line[10];
+// int	is_git_repository(void)
+// {
+// 	FILE	*fp;
+// 	int		result;
+// 	char	line[10];
 
-	result = 0;
-	fp = popen("git rev-parse --is-inside-work-tree 2>/dev/null", "r");
-	if (fp != NULL)
-	{
-		if (fgets(line, sizeof(line), fp) != NULL)
-		{
-			if (strncmp(line, "true", 4) == 0)
-				result = 1;
-		}
-		pclose(fp);
-	}
-	return (result);
-}
+// 	result = 0;
+// 	fp = popen("git rev-parse --is-inside-work-tree 2>/dev/null", "r");
+// 	if (fp != NULL)
+// 	{
+// 		if (fgets(line, sizeof(line), fp) != NULL)
+// 		{
+// 			if (strncmp(line, "true", 4) == 0)
+// 				result = 1;
+// 		}
+// 		pclose(fp);
+// 	}
+// 	return (result);
+// }
 
-char	*get_git_branch(void)
-{
-	FILE	*fp;
-	char	*branch;
-	char	line[1024];
+// char	*get_git_branch(void)
+// {
+// 	FILE	*fp;
+// 	char	*branch;
+// 	char	line[1024];
 
-	branch = NULL;
-	fp = popen("git branch 2>/dev/null | grep \\* | cut -d ' ' -f2", "r");
-	if (fp == NULL)
-		return (NULL);
-	if (fgets(line, sizeof(line), fp) != NULL)
-	{
-		line[strcspn(line, "\n")] = 0;
-		branch = ft_strdup(line);
-	}
-	pclose(fp);
-	return (branch);
-}
+// 	branch = NULL;
+// 	fp = popen("git branch 2>/dev/null | grep \\* | cut -d ' ' -f2", "r");
+// 	if (fp == NULL)
+// 		return (NULL);
+// 	if (fgets(line, sizeof(line), fp) != NULL)
+// 	{
+// 		line[strcspn(line, "\n")] = 0;
+// 		branch = ft_strdup(line);
+// 	}
+// 	pclose(fp);
+// 	return (branch);
+// }

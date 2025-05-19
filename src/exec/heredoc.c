@@ -3,20 +3,22 @@
 /*                                                        :::      ::::::::   */
 /*   heredoc.c                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: lfirmin <lfirmin@student.42.fr>            +#+  +:+       +#+        */
+/*   By: root <root@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/23 01:17:12 by lfirmin           #+#    #+#             */
-/*   Updated: 2025/04/23 01:17:17 by lfirmin          ###   ########.fr       */
+/*   Updated: 2025/05/16 03:29:50 by root             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../../includes/minishell.h"
 
-int handle_heredoc(char *delim)
+int	handle_heredoc(char *delim)
 {
-	int pipefd[2];
-	char *line;
+	int		pipefd[2];
+	char	*line;
 
+	if (!delim)
+		return (1);
 	if (pipe(pipefd) == -1)
 	{
 		perror("pipe");
@@ -26,7 +28,10 @@ int handle_heredoc(char *delim)
 	{
 		line = readline("> ");
 		if (!line)
+		{
+			write(2, "warning: here-document delimited by end-of-file\n", 48);
 			break;
+		}
 		if (ft_strcmp(line, delim) == 0)
 		{
 			free(line);

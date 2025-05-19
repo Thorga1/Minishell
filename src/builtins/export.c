@@ -6,7 +6,7 @@
 /*   By: lfirmin <lfirmin@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/23 11:54:38 by lfirmin           #+#    #+#             */
-/*   Updated: 2025/04/23 11:59:42 by lfirmin          ###   ########.fr       */
+/*   Updated: 2025/05/19 08:28:11 by lfirmin          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,6 +18,8 @@ int	is_valid_identifier(char *str)
 
 	if (!str || !*str)
 		return (0);
+	if (str[0] == '-')
+		return (-1);  // Retourne -1 pour les options (commençant par -)
 	if (!((str[0] >= 'a' && str[0] <= 'z')
 			|| (str[0] >= 'A' && str[0] <= 'Z')
 			|| str[0] == '_'))
@@ -92,14 +94,25 @@ int	process_export_args(t_shell *shell, char **args, int i)
 {
 	int	ret;
 	int	status;
+	int	success;
+	int	validity;
 
-	ret = 0;
+	ret = 1;
+	success = 0;
 	while (args[i])
 	{
-		if (!is_valid_identifier(args[i]))
+		validity = is_valid_identifier(args[i]);
+		if (validity <= 0)
 		{
-			printf("export: '%s': not a valid identifier\n", args[i]);
-			ret = 1;
+			ft_putstr_fd("export: '", 2);
+			ft_putstr_fd(args[i], 2);
+			if (validity == -1)
+			{
+				ft_putstr_fd("': option invalide\n", 2);
+				return (2);  // Retourner 2 pour les options non valides
+			}
+			else
+				ft_putstr_fd("': not a valid identifier\n", 2);
 			i++;
 			continue ;
 		}
@@ -108,9 +121,14 @@ int	process_export_args(t_shell *shell, char **args, int i)
 			status = handle_env_var(shell, args[i]);
 			if (status != 0)
 				return (status);
+			success = 1;
 		}
+		else
+			success = 1;
 		i++;
 	}
+	if (success)
+		ret = 0;
 	return (ret);
 }
 

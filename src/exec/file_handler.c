@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   file_handler.c                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: lfirmin <lfirmin@student.42.fr>            +#+  +:+       +#+        */
+/*   By: root <root@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/02 16:27:31 by tordner           #+#    #+#             */
-/*   Updated: 2025/04/23 01:17:43 by lfirmin          ###   ########.fr       */
+/*   Updated: 2025/05/16 03:29:13 by root             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,10 +16,12 @@ int	open_file(char *file, int flags, int mode)
 {
 	int	fd;
 
+	if (!file)
+		return (-1);
 	fd = open(file, flags, mode);
 	if (fd == -1)
 	{
-		write(1, "Error opening file\n", 20);
+		perror(file);
 		return (-1);
 	}
 	return (fd);
@@ -29,12 +31,14 @@ int	setup_files(t_redirection *redir)
 {
 	int	fd;
 
+	if (!redir || !redir->file)
+		return (1);
 	if (redir->type == 1) // Redirection d'entrée (<)
 	{
 		fd = open(redir->file, O_RDONLY);
 		if (fd == -1)
 		{
-			perror("open");
+			perror(redir->file);
 			return (1);
 		}
 		dup2(fd, STDIN_FILENO);
@@ -45,7 +49,7 @@ int	setup_files(t_redirection *redir)
 		fd = open(redir->file, O_WRONLY | O_CREAT | O_TRUNC, 0644);
 		if (fd == -1)
 		{
-			perror("open");
+			perror(redir->file);
 			return (1);
 		}
 		dup2(fd, STDOUT_FILENO);
@@ -56,7 +60,7 @@ int	setup_files(t_redirection *redir)
 		fd = open(redir->file, O_WRONLY | O_CREAT | O_APPEND, 0644);
 		if (fd == -1)
 		{
-			perror("open");
+			perror(redir->file);
 			return (1);
 		}
 		dup2(fd, STDOUT_FILENO);
@@ -73,11 +77,16 @@ int	setup_files(t_redirection *redir)
 int	loop_open_files(t_cmd *cmd)
 {
 	t_redirection	*redir;
+	int				result;
 
+	if (!cmd || !cmd->redir)
+		return (0);
 	redir = cmd->redir;
 	while (redir)
 	{
-		setup_files(redir);
+		result = setup_files(redir);
+		if (result != 0)
+			return (result);
 		redir = redir->next;
 	}
 	return (0);

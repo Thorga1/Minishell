@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   input.c                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: tordner <tordner@student.42.fr>            +#+  +:+       +#+        */
+/*   By: root <root@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/30 17:17:15 by lfirmin           #+#    #+#             */
-/*   Updated: 2025/04/24 16:11:29 by tordner          ###   ########.fr       */
+/*   Updated: 2025/05/16 01:38:31 by root             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -49,13 +49,7 @@ void	process_input(char *input, t_shell *shell)
 	if (cmd_list)
 	{
 		ret = execute_pipeline(cmd_list, shell);
-		if (ret == -1)
-		{
-			printf(ERROR_NOT_FOUND, cmd_list->args[0]);
-			shell->exit_status = 127;
-		}
-		else
-			shell->exit_status = ret;
+		shell->exit_status = ret;
 		free_cmd_list(cmd_list);
 	}
 	i = 0;
