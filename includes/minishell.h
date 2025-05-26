@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   minishell.h                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: root <root@student.42.fr>                  +#+  +:+       +#+        */
+/*   By: lfirmin <lfirmin@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/05 15:00:11 by thorgal           #+#    #+#             */
-/*   Updated: 2025/05/19 10:55:58 by root             ###   ########.fr       */
+/*   Updated: 2025/05/26 17:42:37 by lfirmin          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -227,6 +227,7 @@ int				extract_quoted_token(char *input, int *index, char quote_char);
 int				is_delimiter(char c);
 int				is_special(char c);
 void			skip_delimiters(char *str, int *i);
+char			*extract_quoted_content(char *input, int start, int len, char quote_char);
 
 ///////////////////////////
 ///////token_utils2.c//////

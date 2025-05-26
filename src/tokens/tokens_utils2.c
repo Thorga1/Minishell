@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   tokens_utils2.c                                    :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: thorgal <thorgal@student.42.fr>            +#+  +:+       +#+        */
+/*   By: lfirmin <lfirmin@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/23 03:25:24 by lfirmin           #+#    #+#             */
-/*   Updated: 2025/05/26 17:05:43 by thorgal          ###   ########.fr       */
+/*   Updated: 2025/05/26 17:42:37 by lfirmin          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -37,14 +37,31 @@ char	*extract_token(char *input, int *index)
 	char	*token;
 	int		start;
 	int		token_len;
+	int		temp_index;
+	char	quote_char;
 
+	temp_index = *index;
+	// Skip delimiters to find the actual start of the token
+	while (input[temp_index] && (input[temp_index] == ' ' || input[temp_index] == '\t'))
+		temp_index++;
+	
 	token_len = extract_token_len(input, index, &start);
 	if (token_len == -1)
 		return (NULL);
-	token = malloc(sizeof(char) * (token_len + 1));
-	if (!token)
-		return (NULL);
-	ft_strlcpy(token, input + start, token_len + 1);
+	
+	// Check if this was a quoted token
+	if (input[temp_index] == '\'' || input[temp_index] == '\"')
+	{
+		quote_char = input[temp_index];
+		token = extract_quoted_content(input, start, token_len, quote_char);
+	}
+	else
+	{
+		token = malloc(sizeof(char) * (token_len + 1));
+		if (!token)
+			return (NULL);
+		ft_strlcpy(token, input + start, token_len + 1);
+	}
 	return (token);
 }
 

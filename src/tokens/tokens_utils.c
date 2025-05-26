@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   tokens_utils.c                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: thorgal <thorgal@student.42.fr>            +#+  +:+       +#+        */
+/*   By: lfirmin <lfirmin@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/04 17:21:22 by thorgal           #+#    #+#             */
-/*   Updated: 2025/05/26 16:56:40 by thorgal          ###   ########.fr       */
+/*   Updated: 2025/05/26 17:42:37 by lfirmin          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,10 +17,25 @@ void	handle_quoted_count(char *str, int *i, char quote)
 	(*i)++;
 	while (str[*i])
 	{
-		if (str[*i] == '\\' && str[*i + 1] == quote)
+		if (str[*i] == '\\' && str[*i + 1])
 		{
+			if (quote == '"')
+			{
+				// Dans les double quotes, on peut échapper: " \ $ ` newline
+				if (str[*i + 1] == '"' || str[*i + 1] == '\\' || 
+					str[*i + 1] == '$' || str[*i + 1] == '`' || 
+					str[*i + 1] == '\n')
+				{
+					(*i) += 2;
+					continue ;
+				}
+			}
+			else if (quote == '\'' && str[*i + 1] == '\'')
+		{
+				// Dans les single quotes, seul \' peut être échappé
 			(*i) += 2;
 			continue ;
+			}
 		}
 		if (str[*i] == quote)
 		{
