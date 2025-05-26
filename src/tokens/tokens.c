@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   tokens.c                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: lfirmin <lfirmin@student.42.fr>            +#+  +:+       +#+        */
+/*   By: thorgal <thorgal@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/10 17:47:48 by thorgal           #+#    #+#             */
-/*   Updated: 2025/04/23 03:07:26 by lfirmin          ###   ########.fr       */
+/*   Updated: 2025/05/26 16:56:28 by thorgal          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,16 +18,23 @@ int	extract_quoted_token(char *input, int *index, char quote_char)
 
 	count = 0;
 	(*index)++;
-	while (input[*index] && input[*index] != quote_char)
+	while (input[*index])
 	{
+		if (input[*index] == '\\' && input[*index + 1] == quote_char)
+		{
+			(*index) += 2;
+			count += 2;
+			continue ;
+		}
+		if (input[*index] == quote_char)
+		{
+			(*index)++;
+			return (0);
+		}
 		(*index)++;
 		count++;
 	}
-	if (input[*index] == quote_char)
-		(*index)++;
-	else if (input[*index] == '\0' || count == 0)
-		return (1);
-	return (0);
+	return (1);
 }
 
 int	is_delimiter(char c)

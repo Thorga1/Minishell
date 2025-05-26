@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   tokens_utils.c                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: lfirmin <lfirmin@student.42.fr>            +#+  +:+       +#+        */
+/*   By: thorgal <thorgal@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/04 17:21:22 by thorgal           #+#    #+#             */
-/*   Updated: 2025/04/23 03:31:04 by lfirmin          ###   ########.fr       */
+/*   Updated: 2025/05/26 16:56:40 by thorgal          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,10 +15,20 @@
 void	handle_quoted_count(char *str, int *i, char quote)
 {
 	(*i)++;
-	while (str[*i] && str[*i] != quote)
+	while (str[*i])
+	{
+		if (str[*i] == '\\' && str[*i + 1] == quote)
+		{
+			(*i) += 2;
+			continue ;
+		}
+		if (str[*i] == quote)
+		{
+			(*i)++;
+			break ;
+		}
 		(*i)++;
-	if (str[*i] == quote)
-		(*i)++;
+	}
 }
 
 void	handle_special_count(char *str, int *i)

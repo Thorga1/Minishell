@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   tokens_utils2.c                                    :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: tordner <tordner@student.42.fr>            +#+  +:+       +#+        */
+/*   By: thorgal <thorgal@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/23 03:25:24 by lfirmin           #+#    #+#             */
-/*   Updated: 2025/05/19 11:38:03 by tordner          ###   ########.fr       */
+/*   Updated: 2025/05/26 17:05:43 by thorgal          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,7 +20,7 @@ int	extract_token_len(char *input, int *index, int *start)
 		(*index)++;
 	*start = *index;
 	if (input[*index] == '\'' || input[*index] == '\"')
-		token_len = handle_quoted_token(input, index, start);
+		token_len = handle_quoted_token(input, index, start); 
 	else if (is_special(input[*index]))
 		token_len = handle_special_token(input, index);
 	else
@@ -50,12 +50,20 @@ char	*extract_token(char *input, int *index)
 
 int	check_quotes(char *input)
 {
-	bool	in_squote = false;
-	bool	in_dquote = false;
-	int		i = 0;
+	bool	in_squote;
+	bool	in_dquote;
+	int		i;
 
+	in_squote = false;
+	in_dquote = false;
+	i = 0;
 	while (input[i])
 	{
+		if (input[i] == '\\' && input[i + 1])
+		{
+			i += 2;
+			continue ;
+		}
 		if (input[i] == '\'' && !in_dquote)
 			in_squote = !in_squote;
 		else if (input[i] == '"' && !in_squote)
