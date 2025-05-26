@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   shell.c                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: root <root@student.42.fr>                  +#+  +:+       +#+        */
+/*   By: lfirmin <lfirmin@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/21 15:38:19 by lfirmin           #+#    #+#             */
-/*   Updated: 2025/05/16 01:24:50 by root             ###   ########.fr       */
+/*   Updated: 2025/05/26 14:19:16 by lfirmin          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,18 +21,18 @@ char	*create_standard_prompt(char *dir_name, int exit_status)
 
 	if (exit_status == 0)
 	{
-		tmp = ft_strjoin(GREEN "➜\033[0m  \033[1;36m", dir_name);
+		tmp = ft_strjoin(GREEN "➜\001\033[0m\002  \001\033[1;36m\002", dir_name);
 		if (!tmp)
 			return (NULL);
-		prompt = ft_strjoin(tmp, "\033[0m ❯ ");
+		prompt = ft_strjoin(tmp, "\001\033[0m\002 ❯ ");
 		free(tmp);
 	}
 	else
 	{
-		tmp = ft_strjoin(RED "➜\033[0m  \033[1;36m", dir_name);
+		tmp = ft_strjoin(RED "➜\001\033[0m\002  \001\033[1;36m\002", dir_name);
 		if (!tmp)
 			return (NULL);
-		prompt = ft_strjoin(tmp, "\033[0m ❯ ");
+		prompt = ft_strjoin(tmp, "\001\033[0m\002 ❯ ");
 		free(tmp);
 	}
 	return (prompt);
