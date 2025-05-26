@@ -3,42 +3,37 @@
 /*                                                        :::      ::::::::   */
 /*   pipe.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: lfirmin <lfirmin@student.42.fr>            +#+  +:+       +#+        */
+/*   By: thorgal <thorgal@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/02 13:25:59 by tordner           #+#    #+#             */
-/*   Updated: 2025/05/17 04:25:46 by lfirmin          ###   ########.fr       */
+/*   Updated: 2025/05/26 15:20:28 by thorgal          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../../includes/minishell.h"
 
-void	handle_child_pipe(int pipefd[2], int infile)
+void	handle_child(t_cmd *cmd, int infile, int pipefd[2], t_shell *shell)
 {
-	close(pipefd[0]);
-	dup2(infile, 0);
-	dup2(pipefd[1], 1);
-	close(infile);
-	close(pipefd[1]);
-}
-
-static void	exec_child(t_cmd *cmd, int infile, int pipefd[2], t_shell *shell)
-{
+	if (dup2(infile, STDIN_FILENO) == -1)
+		exit(1);
+	if (cmd->next && dup2(pipefd[1], STDOUT_FILENO) == -1)
+		exit(1);
+	if (infile != STDIN_FILENO)
+		close(infile);
 	if (cmd->next)
-		handle_child_pipe(pipefd, infile);
-	else
-		dup2(infile, STDIN_FILENO);
-	if (cmd->redir)
 	{
-		if (loop_open_files(cmd) != 0)
-			exit(1);
+		close(pipefd[0]);
+		close(pipefd[1]);
 	}
+	if (cmd->redir && loop_open_files(cmd) != 0)
+		exit(1);
 	if (is_builtin(cmd->args[0]))
 		exit(execute_builtin(cmd, shell));
-	else
-		execute_ve(cmd, shell->env);
+	execute_ve(cmd, shell->env);
+	exit(1);
 }
 
-static void	exec_parent(int *infile, int pipefd[2], t_cmd *cmd)
+void	handle_parent(int *infile, int pipefd[2], t_cmd *cmd)
 {
 	if (*infile != STDIN_FILENO)
 		close(*infile);
@@ -47,29 +42,44 @@ static void	exec_parent(int *infile, int pipefd[2], t_cmd *cmd)
 		close(pipefd[1]);
 		*infile = pipefd[0];
 	}
+	else if (pipefd[0] != -1)
+		close(pipefd[0]);
 }
 
-static int	spawn_processes(t_cmd *cmd, t_shell *shell, int infile)
+int	run_child_pipe(t_cmd *cmd, t_shell *shell, int *infile)
 {
 	int		pipefd[2];
 	pid_t	pid;
+
+	if (cmd->next && pipe(pipefd) == -1)
+		return (1);
+	else if (!cmd->next)
+	{
+		pipefd[0] = -1;
+		pipefd[1] = STDOUT_FILENO;
+	}
+	pid = fork();
+	if (pid == -1)
+		return (1);
+	if (pid == 0)
+		handle_child(cmd, *infile, pipefd, shell);
+	handle_parent(infile, pipefd, cmd);
+	return (0);
+}
+
+int	spawn_pipeline(t_cmd *cmd, t_shell *shell)
+{
+	int		infile;
 	int		status;
 	int		exit_status;
 
+	infile = STDIN_FILENO;
 	while (cmd)
 	{
-		if (cmd->next)
-			pipe(pipefd);
-		else
-			pipefd[1] = STDOUT_FILENO;
-		pid = fork();
-		if (pid == 0)
-			exec_child(cmd, infile, pipefd, shell);
-		else
-			exec_parent(&infile, pipefd, cmd);
+		if (run_child_pipe(cmd, shell, &infile) != 0)
+			return (1);
 		cmd = cmd->next;
 	}
-	
 	exit_status = 0;
 	while (wait(&status) > 0)
 	{
@@ -83,11 +93,8 @@ static int	spawn_processes(t_cmd *cmd, t_shell *shell, int infile)
 
 int	execute_pipeline(t_cmd *cmd_list, t_shell *shell)
 {
-	int		infile;
-	int		exit_status;
 	int		redir_status;
 
-	infile = STDIN_FILENO;
 	if (cmd_list && !cmd_list->next && is_builtin(cmd_list->args[0]))
 	{
 		if (cmd_list->redir)
@@ -98,7 +105,6 @@ int	execute_pipeline(t_cmd *cmd_list, t_shell *shell)
 		}
 		return (shell->exit_status = execute_builtin(cmd_list, shell));
 	}
-	exit_status = spawn_processes(cmd_list, shell, infile);
-	shell->exit_status = exit_status;
-	return (exit_status);
+	shell->exit_status = spawn_pipeline(cmd_list, shell);
+	return (shell->exit_status);
 }
