@@ -6,7 +6,7 @@
 /*   By: lfirmin <lfirmin@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/10 17:47:48 by thorgal           #+#    #+#             */
-/*   Updated: 2025/05/26 17:42:37 by lfirmin          ###   ########.fr       */
+/*   Updated: 2025/05/27 11:25:58 by lfirmin          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,7 +24,6 @@ int	extract_quoted_token(char *input, int *index, char quote_char)
 		{
 			if (quote_char == '"')
 			{
-				// Dans les double quotes, on peut échapper: " \ $ ` newline
 				if (input[*index + 1] == '"' || input[*index + 1] == '\\' || 
 					input[*index + 1] == '$' || input[*index + 1] == '`' || 
 					input[*index + 1] == '\n')
@@ -36,7 +35,6 @@ int	extract_quoted_token(char *input, int *index, char quote_char)
 			}
 			else if (quote_char == '\'' && input[*index + 1] == '\'')
 			{
-				// Dans les single quotes, seul \' peut être échappé
 				(*index) += 2;
 				count += 2;
 				continue ;
@@ -80,7 +78,6 @@ char	*extract_quoted_content(char *input, int start, int len, char quote_char)
 		{
 			if (quote_char == '"')
 			{
-				// Dans les double quotes, on peut échapper: " \ $ ` newline
 				if (input[i + 1] == '"' || input[i + 1] == '\\' || 
 					input[i + 1] == '$' || input[i + 1] == '`' || 
 					input[i + 1] == '\n')
@@ -90,14 +87,12 @@ char	*extract_quoted_content(char *input, int start, int len, char quote_char)
 				}
 				else
 				{
-					// Si ce n'est pas un caractère échappable, on garde le backslash
 					content[j++] = input[i];
 					i++;
 				}
 			}
 			else if (quote_char == '\'')
 			{
-				// Dans les single quotes, seul \' peut être échappé
 				if (input[i + 1] == '\'')
 				{
 					content[j++] = '\'';
