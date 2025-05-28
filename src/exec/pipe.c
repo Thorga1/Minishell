@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   pipe.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: thorgal <thorgal@student.42.fr>            +#+  +:+       +#+        */
+/*   By: lfirmin <lfirmin@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/02 13:25:59 by tordner           #+#    #+#             */
-/*   Updated: 2025/05/26 15:20:28 by thorgal          ###   ########.fr       */
+/*   Updated: 2025/05/28 19:35:13 by lfirmin          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -91,17 +91,34 @@ int	spawn_pipeline(t_cmd *cmd, t_shell *shell)
 	return (exit_status);
 }
 
+void	restore_fds(int saved_stdin, int saved_stdout)
+{
+	dup2(saved_stdin, STDIN_FILENO);
+	dup2(saved_stdout, STDOUT_FILENO);
+	close(saved_stdin);
+	close(saved_stdout);
+}
+
 int	execute_pipeline(t_cmd *cmd_list, t_shell *shell)
 {
 	int		redir_status;
+	int		saved_stdin, saved_stdout;
 
 	if (cmd_list && !cmd_list->next && is_builtin(cmd_list->args[0]))
 	{
 		if (cmd_list->redir)
 		{
+			saved_stdin = dup(STDIN_FILENO);
+			saved_stdout = dup(STDOUT_FILENO);
 			redir_status = loop_open_files(cmd_list);
 			if (redir_status != 0)
+			{
+				restore_fds(saved_stdin, saved_stdout);
 				return (shell->exit_status = 1);
+			}
+			shell->exit_status = execute_builtin(cmd_list, shell);
+			restore_fds(saved_stdin, saved_stdout);
+			return (shell->exit_status);
 		}
 		return (shell->exit_status = execute_builtin(cmd_list, shell));
 	}
