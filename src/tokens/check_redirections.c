@@ -47,7 +47,6 @@ int	validate_redirections(char **tokens)
 {
 	int	i;
 
-	debug_tokens(tokens);
 	i = 0;
 	if (is_redirection(tokens[i]))
 	{

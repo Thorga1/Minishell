@@ -6,7 +6,7 @@
 /*   By: lfirmin <lfirmin@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/23 03:25:24 by lfirmin           #+#    #+#             */
-/*   Updated: 2025/05/29 14:21:47 by lfirmin          ###   ########.fr       */
+/*   Updated: 2025/05/29 14:35:33 by lfirmin          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,8 +25,20 @@ int	extract_token_len(char *input, int *index, int *start)
 		token_len = handle_special_token(input, index);
 	else
 	{
-		while (input[*index] && !is_delimiter(input[*index]))
-			(*index)++;
+		while (input[*index] && !is_delimiter(input[*index]) && !is_special(input[*index]))
+		{
+			if (input[*index] == '\'' || input[*index] == '\"')
+			{
+				char quote = input[*index];
+				(*index)++;
+				while (input[*index] && input[*index] != quote)
+					(*index)++;
+				if (input[*index] == quote)
+					(*index)++;
+			}
+			else
+				(*index)++;
+		}
 		token_len = *index - *start;
 	}
 	return (token_len);
@@ -120,7 +132,18 @@ char	**tokenize_command(char *input)
 
 void	handle_word_count(char *str, int *i)
 {
-	while (str[*i] && !is_delimiter(str[*i]) && !is_special(str[*i])
-		&& str[*i] != '\'' && str[*i] != '\"')
-		(*i)++;
+	while (str[*i] && !is_delimiter(str[*i]) && !is_special(str[*i]))
+	{
+		if (str[*i] == '\'' || str[*i] == '\"')
+		{
+			char quote = str[*i];
+			(*i)++;
+			while (str[*i] && str[*i] != quote)
+				(*i)++;
+			if (str[*i] == quote)
+				(*i)++;
+		}
+		else
+			(*i)++;
+	}
 }
