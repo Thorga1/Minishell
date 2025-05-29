@@ -6,11 +6,13 @@
 /*   By: lfirmin <lfirmin@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/02 13:25:59 by tordner           #+#    #+#             */
-/*   Updated: 2025/05/28 19:35:13 by lfirmin          ###   ########.fr       */
+/*   Updated: 2025/05/29 12:57:36 by lfirmin          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../../includes/minishell.h"
+
+extern int g_child_running;
 
 void	handle_child(t_cmd *cmd, int infile, int pipefd[2], t_shell *shell)
 {
@@ -73,11 +75,15 @@ int	spawn_pipeline(t_cmd *cmd, t_shell *shell)
 	int		status;
 	int		exit_status;
 
+	g_child_running = 1;
 	infile = STDIN_FILENO;
 	while (cmd)
 	{
 		if (run_child_pipe(cmd, shell, &infile) != 0)
+		{
+			g_child_running = 0;
 			return (1);
+		}
 		cmd = cmd->next;
 	}
 	exit_status = 0;
@@ -86,8 +92,14 @@ int	spawn_pipeline(t_cmd *cmd, t_shell *shell)
 		if (WIFEXITED(status))
 			exit_status = WEXITSTATUS(status);
 		else if (WIFSIGNALED(status))
-			exit_status = 128 + WTERMSIG(status);
+		{
+			if (WTERMSIG(status) == SIGINT)
+				exit_status = 130;
+			else
+				exit_status = 128 + WTERMSIG(status);
+		}
 	}
+	g_child_running = 0;
 	return (exit_status);
 }
 

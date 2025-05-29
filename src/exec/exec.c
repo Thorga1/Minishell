@@ -6,7 +6,7 @@
 /*   By: lfirmin <lfirmin@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/02 13:25:52 by tordner           #+#    #+#             */
-/*   Updated: 2025/05/19 06:27:28 by lfirmin          ###   ########.fr       */
+/*   Updated: 2025/05/29 12:51:52 by lfirmin          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -89,6 +89,7 @@ int	ft_exec(t_cmd *cmd, char **envp)
 	if (pid == -1)
 	{
 		write(2, "Error forking process\n", 23);
+		g_child_running = 0;
 		return (1);
 	}
 	if (pid == 0)
@@ -105,7 +106,12 @@ int	ft_exec(t_cmd *cmd, char **envp)
 	if (WIFEXITED(status))
 		exit_status = WEXITSTATUS(status);
 	else if (WIFSIGNALED(status))
-		exit_status = 128 + WTERMSIG(status);
+	{
+		if (WTERMSIG(status) == SIGINT)
+			exit_status = 130;
+		else
+			exit_status = 128 + WTERMSIG(status);
+	}
 	else
 		exit_status = 1;
 	return (exit_status);

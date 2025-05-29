@@ -6,7 +6,7 @@
 /*   By: lfirmin <lfirmin@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/21 15:38:19 by lfirmin           #+#    #+#             */
-/*   Updated: 2025/05/26 14:52:43 by lfirmin          ###   ########.fr       */
+/*   Updated: 2025/05/29 12:59:16 by lfirmin          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -59,7 +59,10 @@ void sigint_handler(int sig)
 {
 	(void)sig;
 	if (g_child_running)
+	{
+		write(1, "\n", 1);
 		return;
+	}
 	write(1, "\n", 1);
 	rl_on_new_line();
 	rl_replace_line("", 0);
