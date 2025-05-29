@@ -6,7 +6,7 @@
 /*   By: lfirmin <lfirmin@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/21 15:38:19 by lfirmin           #+#    #+#             */
-/*   Updated: 2025/04/23 12:03:40 by lfirmin          ###   ########.fr       */
+/*   Updated: 2025/05/29 14:26:13 by lfirmin          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,4 +28,6 @@
 # define ERROR_NOT_FOUND "Command not found: %s\n"
 # define PROMPT_GIT "➜\001\033[0m\002  \001\033[1;36m\002%s\001\033[0m\002 \001\033[1;32m\002git:(\001\033[1;31m\002%s\001\033[1;32m\002)\001\033[0m\002 ❯ "
 # define PROMPT_STD "➜\001\033[0m\002  \001\033[1;36m\002%s\001\033[0m\002 ❯ "
+
+void	debug_tokens(char **tokens);
 #endif

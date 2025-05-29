@@ -6,12 +6,13 @@
 /*   By: lfirmin <lfirmin@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/02 13:25:52 by tordner           #+#    #+#             */
-/*   Updated: 2025/05/29 12:51:52 by lfirmin          ###   ########.fr       */
+/*   Updated: 2025/05/29 13:46:42 by lfirmin          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../../includes/minishell.h"
 #include <signal.h>
+#include <sys/stat.h>
 
 extern int g_child_running;
 
@@ -34,19 +35,28 @@ int	execute_ve(t_cmd *cmd, char **envp)
 {
 	char	*full_path;
 	char	*path_env;
+	struct stat	file_stat;
 
 	full_path = NULL;
 	if (cmd->args[0][0] == '/' || cmd->args[0][0] == '.')
 	{
 		if (file_exists(cmd->args[0]) != 0)
 		{
-			write(2, "Error: No such file or directory !\n", 36);
+			write(2, cmd->args[0], ft_strlen(cmd->args[0]));
+			write(2, ": No such file or directory\n", 28);
 			exit(127);
+		}
+		else if (stat(cmd->args[0], &file_stat) == 0 && S_ISDIR(file_stat.st_mode))
+		{
+			write(2, cmd->args[0], ft_strlen(cmd->args[0]));
+			write(2, ": Is a directory\n", 17);
+			exit(126);
 		}
 		else if (access(cmd->args[0], X_OK) == 0)
 			execve(cmd->args[0], cmd->args, envp);
-		write(2, "Error: execve error !\n", 23);
-		exit(127);
+		write(2, cmd->args[0], ft_strlen(cmd->args[0]));
+		write(2, ": Permission denied\n", 20);
+		exit(126);
 	}
 	path_env = get_path_env(envp);
 	full_path = execute_ve_2(cmd, path_env, full_path);

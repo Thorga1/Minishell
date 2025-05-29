@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   input.c                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: root <root@student.42.fr>                  +#+  +:+       +#+        */
+/*   By: lfirmin <lfirmin@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/30 17:17:15 by lfirmin           #+#    #+#             */
-/*   Updated: 2025/05/16 01:38:31 by root             ###   ########.fr       */
+/*   Updated: 2025/05/29 13:20:41 by lfirmin          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,6 +27,7 @@ char	**parse_input(char *input, t_shell *shell)
 	if (validate_syntax(tokens))
 	{
 		i = 0;
+		shell->exit_status = 2;
 		while (tokens[i])
 			free(tokens[i++]);
 		free(tokens);

@@ -6,7 +6,7 @@
 /*   By: lfirmin <lfirmin@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/06 17:17:19 by tordner           #+#    #+#             */
-/*   Updated: 2025/04/23 02:50:59 by lfirmin          ###   ########.fr       */
+/*   Updated: 2025/05/29 14:25:34 by lfirmin          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,21 +24,20 @@ int	check_further_redirections(char **tokens, int i)
 {
 	if (is_redirection(tokens[i]) && !tokens[i + 1])
 	{
-		printf("Syntax error: Redirection cannot appear at the end\n");
-		return (1);
+		write(STDERR_FILENO, "Syntax error: Redirection cannot appear at the end\n", 52);
+		return (2);
 	}
 	if (is_redirection(tokens[i]) && is_redirection(tokens[i + 1]))
 	{
-		printf("Syntax error: Consecutive"
-			"redirection operators are not allowed\n");
-		return (1);
+		write(STDERR_FILENO, "Syntax error: Consecutive redirection operators are not allowed\n", 65);
+		return (2);
 	}
 	if (tokens[i] && tokens[i + 1] && classify_token(tokens[i]) == TOKEN_PIPE)
 	{
 		if (is_redirection(tokens[i + 1]))
 		{
-			printf("Syntax error: Redirection cannot follow a pipe\n");
-			return (1);
+			write(STDERR_FILENO, "Syntax error: Redirection cannot follow a pipe\n", 48);
+			return (2);
 		}
 	}
 	return (0);
@@ -48,20 +47,21 @@ int	validate_redirections(char **tokens)
 {
 	int	i;
 
+	debug_tokens(tokens);
 	i = 0;
 	if (is_redirection(tokens[i]))
 	{
-		printf("Syntax error: Redirection cannot appear at the beginning\n");
-		return (1);
+		write(STDERR_FILENO, "Syntax error: Redirection cannot appear at the beginning\n", 57);
+		return (2);
 	}
 	while (tokens[i])
 	{
 		if (check_further_redirections(tokens, i))
-			return (1);
+			return (2);
 		if (tokens[i] && is_redirection(tokens[i]) && !tokens[i - 1])
 		{
-			printf("Syntax error: Redirection must follow a command or word\n");
-			return (1);
+			write(STDERR_FILENO, "Syntax error: Redirection must follow a command or word\n", 56);
+			return (2);
 		}
 		i++;
 	}

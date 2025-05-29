@@ -6,7 +6,7 @@
 /*   By: lfirmin <lfirmin@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/23 11:54:38 by lfirmin           #+#    #+#             */
-/*   Updated: 2025/05/19 08:28:11 by lfirmin          ###   ########.fr       */
+/*   Updated: 2025/05/29 14:06:21 by lfirmin          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -34,6 +34,9 @@ int	is_valid_identifier(char *str)
 			return (0);
 		i++;
 	}
+	// Si on arrive ici, soit on a atteint la fin de la chaîne (pas de =)
+	// soit on a trouvé un = et tout ce qui précède est valide
+	// Dans les deux cas, c'est un identifiant valide
 	return (1);
 }
 

@@ -6,7 +6,7 @@
 /*   By: lfirmin <lfirmin@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/10 17:47:48 by thorgal           #+#    #+#             */
-/*   Updated: 2025/05/27 11:25:58 by lfirmin          ###   ########.fr       */
+/*   Updated: 2025/05/29 14:24:34 by lfirmin          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -119,4 +119,23 @@ void	skip_delimiters(char *str, int *i)
 {
 	while (str[*i] && is_delimiter(str[*i]))
 		(*i)++;
+}
+
+void	debug_tokens(char **tokens)
+{
+	int	i;
+
+	if (!tokens)
+	{
+		printf("DEBUG: tokens = NULL\n");
+		return ;
+	}
+	printf("DEBUG: Tokens array:\n");
+	i = 0;
+	while (tokens[i])
+	{
+		printf("  [%d]: '%s'\n", i, tokens[i]);
+		i++;
+	}
+	printf("  Total tokens: %d\n", i);
 }
