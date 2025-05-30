@@ -6,7 +6,7 @@
 /*   By: lfirmin <lfirmin@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/25 17:40:53 by thorgal           #+#    #+#             */
-/*   Updated: 2025/05/29 13:24:20 by lfirmin          ###   ########.fr       */
+/*   Updated: 2025/05/30 15:16:30 by lfirmin          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,7 +31,7 @@ int	validate_syntax(char **tokens)
 {
 	if (validate_pipes(tokens))
 	{
-		write(STDERR_FILENO, "Syntax error: unexpected pipe\n", 28);
+		write(STDERR_FILENO, "Syntax error: unexpected pipe\n", 30);
 		return (1);
 	}
 	if (validate_redirections(tokens))

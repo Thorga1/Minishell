@@ -6,7 +6,7 @@
 /*   By: lfirmin <lfirmin@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/30 17:17:08 by thorgal           #+#    #+#             */
-/*   Updated: 2025/05/05 15:51:13 by lfirmin          ###   ########.fr       */
+/*   Updated: 2025/05/29 15:02:09 by lfirmin          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,7 +26,12 @@ char	*get_env_value(char *var_name, t_shell *shell)
 		printf("%d", shell->exit_status);
 		return (0);
 	}
-	var_len = ft_strlen(var_name);
+	var_len = 0;
+	// Calculer la longueur du nom de variable valide (lettres, chiffres, underscore)
+	while (var_name[var_len] && (ft_isalnum(var_name[var_len]) || var_name[var_len] == '_'))
+		var_len++;
+	if (var_len == 0)
+		return (NULL);
 	i = 0;
 	while (shell->env[i])
 	{
@@ -38,29 +43,73 @@ char	*get_env_value(char *var_name, t_shell *shell)
 	return (NULL);
 }
 
+
+void	print_with_expansion(char *str, t_shell *shell)
+{
+	int		i;
+	int		start;
+	char	*env_value;
+	char	temp_var[256];
+	int		var_len;
+
+	i = 0;
+	while (str[i])
+	{
+		if (str[i] == '$' && str[i + 1] && (ft_isalnum(str[i + 1]) || str[i + 1] == '_' || str[i + 1] == '?'))
+		{
+			start = i + 1;
+			if (str[start] == '?')
+			{
+				printf("%d", shell->exit_status);
+				i += 2;
+			}
+			else
+			{
+				var_len = 0;
+				while (str[start + var_len] && (ft_isalnum(str[start + var_len]) || str[start + var_len] == '_'))
+					var_len++;
+				if (var_len > 0 && var_len < 255)
+				{
+					ft_strlcpy(temp_var, &str[start], var_len + 1);
+					env_value = get_env_value(temp_var, shell);
+					if (env_value)
+						printf("%s", env_value);
+				}
+				i = start + var_len;
+			}
+		}
+		else
+		{
+			printf("%c", str[i]);
+			i++;
+		}
+	}
+}
+
 int	is_env_var(char *str)
 {
-	return (str && str[0] == '$' && str[1] != '\0');
+	int	i;
+	
+	if (!str || str[0] != '$')
+		return (0);
+	i = 1;
+	while (str[i])
+	{
+		if (str[i] == '$')
+			return (1); // Contient au moins une variable
+		i++;
+	}
+	return (str[1] != '\0'); // Simple variable si pas d'autres caractères après $
 }
 
 void	print_echo_args(char **args, int i, t_shell *shell, int first)
 {
-	char	*env_value;
-
 	while (args[i])
 	{
 		if (!first)
 			printf(" ");
-		if (is_env_var(args[i]))
-		{
-			env_value = get_env_value(args[i], shell);
-			if (env_value)
-				printf("%s", env_value);
-		}
-		else
-		{
-			printf("%s", args[i]);
-		}
+		// Utiliser la nouvelle fonction d'expansion pour tous les arguments
+		print_with_expansion(args[i], shell);
 		first = 0;
 		i++;
 	}
