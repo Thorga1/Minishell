@@ -6,7 +6,7 @@
 /*   By: lfirmin <lfirmin@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/30 17:17:08 by thorgal           #+#    #+#             */
-/*   Updated: 2025/05/29 15:02:09 by lfirmin          ###   ########.fr       */
+/*   Updated: 2025/05/31 14:37:37 by lfirmin          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -102,13 +102,28 @@ int	is_env_var(char *str)
 	return (str[1] != '\0'); // Simple variable si pas d'autres caractères après $
 }
 
+int	is_valid_n_option(char *str)
+{
+	int	i;
+
+	if (!str || str[0] != '-' || str[1] != 'n')
+		return (0);
+	i = 2;
+	while (str[i])
+	{
+		if (str[i] != 'n')
+			return (0);
+		i++;
+	}
+	return (1);
+}
+
 void	print_echo_args(char **args, int i, t_shell *shell, int first)
 {
 	while (args[i])
 	{
 		if (!first)
 			printf(" ");
-		// Utiliser la nouvelle fonction d'expansion pour tous les arguments
 		print_with_expansion(args[i], shell);
 		first = 0;
 		i++;
@@ -125,11 +140,14 @@ int	ft_echo(t_cmd *cmd, t_shell *shell)
 	i = 1;
 	print_newline = 1;
 	args = cmd->args;
-	if (args[i] && ft_strcmp(args[i], "-n") == 0)
+	
+	// Traiter tous les arguments -n consécutifs
+	while (args[i] && is_valid_n_option(args[i]))
 	{
 		print_newline = 0;
 		i++;
 	}
+	
 	first = 1;
 	print_echo_args(args, i, shell, first);
 	if (print_newline)
