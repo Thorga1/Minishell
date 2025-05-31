@@ -6,7 +6,7 @@
 /*   By: lfirmin <lfirmin@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/05 15:00:11 by thorgal           #+#    #+#             */
-/*   Updated: 2025/05/29 14:21:48 by lfirmin          ###   ########.fr       */
+/*   Updated: 2025/06/01 00:59:23 by lfirmin          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -242,6 +242,9 @@ void			handle_word_count(char *str, int *i);
 
 int		open_file(char *file, int flags, int mode);
 int		setup_files(t_redirection *redir);
+int		setup_input_redirections(t_redirection *redir);
+int		setup_output_redirections(t_redirection *redir);
+int		has_input_redirection(t_redirection *redir);
 void	close_files(int infile, int outfile);
 char	*find_command(char **paths, char *cmd);
 char	*get_path_env(char **envp);

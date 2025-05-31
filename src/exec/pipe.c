@@ -6,7 +6,7 @@
 /*   By: lfirmin <lfirmin@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/02 13:25:59 by tordner           #+#    #+#             */
-/*   Updated: 2025/05/29 13:07:37 by lfirmin          ###   ########.fr       */
+/*   Updated: 2025/06/01 00:59:05 by lfirmin          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,10 +16,23 @@ extern int g_child_running;
 
 void	handle_child(t_cmd *cmd, int infile, int pipefd[2], t_shell *shell)
 {
-	if (dup2(infile, STDIN_FILENO) == -1)
+	// D'abord, appliquer les redirections d'entrée (< et <<)
+	// Cela peut écraser l'entrée du pipe si nécessaire
+	if (cmd->redir && setup_input_redirections(cmd->redir) != 0)
 		exit(1);
+	
+	// Ensuite, si pas de redirection d'entrée, utiliser l'entrée du pipe
+	if (!has_input_redirection(cmd->redir))
+	{
+		if (dup2(infile, STDIN_FILENO) == -1)
+			exit(1);
+	}
+	
+	// Configurer la sortie du pipe si nécessaire
 	if (cmd->next && dup2(pipefd[1], STDOUT_FILENO) == -1)
 		exit(1);
+	
+	// Fermer les descripteurs inutiles
 	if (infile != STDIN_FILENO)
 		close(infile);
 	if (cmd->next)
@@ -27,8 +40,12 @@ void	handle_child(t_cmd *cmd, int infile, int pipefd[2], t_shell *shell)
 		close(pipefd[0]);
 		close(pipefd[1]);
 	}
-	if (cmd->redir && loop_open_files(cmd) != 0)
+	
+	// Enfin, appliquer les redirections de sortie (> et >>)
+	// Cela peut écraser la sortie du pipe si nécessaire
+	if (cmd->redir && setup_output_redirections(cmd->redir) != 0)
 		exit(1);
+	
 	if (is_builtin(cmd->args[0]))
 		exit(execute_builtin(cmd, shell));
 	execute_ve(cmd, shell->env);
