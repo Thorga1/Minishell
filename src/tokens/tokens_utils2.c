@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   tokens_utils2.c                                    :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: lfirmin <lfirmin@student.42.fr>            +#+  +:+       +#+        */
+/*   By: tordner <tordner@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/23 03:25:24 by lfirmin           #+#    #+#             */
-/*   Updated: 2025/05/29 14:35:33 by lfirmin          ###   ########.fr       */
+/*   Updated: 2025/06/01 23:20:32 by tordner          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -44,7 +44,7 @@ int	extract_token_len(char *input, int *index, int *start)
 	return (token_len);
 }
 
-char	*extract_token(char *input, int *index)
+char	*extract_token(char *input, int *index, t_shell *shell)
 {
 	char	*token;
 	int		start;
@@ -52,18 +52,18 @@ char	*extract_token(char *input, int *index)
 	int		temp_index;
 	char	quote_char;
 
+	shell->single_quoted_token = -1;
 	temp_index = *index;
-	// Skip delimiters to find the actual start of the token
 	while (input[temp_index] && (input[temp_index] == ' ' || input[temp_index] == '\t'))
 		temp_index++;
 	
 	token_len = extract_token_len(input, index, &start);
 	if (token_len == -1)
 		return (NULL);
-	
-	// Check if this was a quoted token
 	if (input[temp_index] == '\'' || input[temp_index] == '\"')
 	{
+		if (input[temp_index] == '\'')
+			shell->single_quoted_token = 1;
 		quote_char = input[temp_index];
 		token = extract_quoted_content(input, start, token_len, quote_char);
 	}
@@ -104,12 +104,13 @@ int	check_quotes(char *input)
 	return (0);
 }
 
-char	**tokenize_command(char *input)
+char	**tokenize_command(char *input, t_shell *shell)
 {
 	char	**tokens;
 	int		count;
 	int		i;
 	int		index;
+	char	*expanded;
 
 	count = count_tokens(input);
 	tokens = malloc(sizeof(char *) * (count + 1));
@@ -119,9 +120,16 @@ char	**tokenize_command(char *input)
 	index = 0;
 	while (i < count)
 	{
-		tokens[i] = extract_token(input, &index);
+		tokens[i] = extract_token(input, &index, shell);
 		if (!tokens[i])
 			return (free_tokens(tokens, i));
+		if (shell->single_quoted_token != 1)
+		{
+			expanded = expand_variables(tokens[i], shell);
+			free(tokens[i]);
+			tokens[i] = expanded;
+			shell->single_quoted_token = -1;
+		}
 		i++;
 	}
 	tokens[i] = NULL;

@@ -6,7 +6,7 @@
 #    By: tordner <tordner@student.42.fr>            +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2025/01/29 17:32:15 by thorgal           #+#    #+#              #
-#    Updated: 2025/06/01 22:25:34 by tordner          ###   ########.fr        #
+#    Updated: 2025/06/01 23:09:42 by tordner          ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -51,7 +51,8 @@ SRCS = 	$(SRCDIR)/main/main.c \
 		$(SRCDIR)/tokens/tokens_utils2.c \
 		$(SRCDIR)/builtins/export_utils.c \
 		$(SRCDIR)/builtins/export_utils2.c \
-		$(SRCDIR)/builtins/exit.c
+		$(SRCDIR)/builtins/exit.c	\
+		$(SRCDIR)/tokens/expander.c
 	
 OBJS = $(SRCS:$(SRCDIR)/%.c=$(OBJDIR)/%.o)
 

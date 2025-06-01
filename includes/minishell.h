@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   minishell.h                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: lfirmin <lfirmin@student.42.fr>            +#+  +:+       +#+        */
+/*   By: tordner <tordner@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/05 15:00:11 by thorgal           #+#    #+#             */
-/*   Updated: 2025/06/01 21:56:14 by lfirmin          ###   ########.fr       */
+/*   Updated: 2025/06/01 23:19:10 by tordner          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -76,6 +76,7 @@ typedef struct s_shell
 	int     running;
 	int     signaled;
 	int     child_running;
+	int		single_quoted_token;
 } t_shell;
 
 ////////////////////////////////////////////////////////////////
@@ -262,9 +263,9 @@ char			*extract_quoted_content(char *input, int start, int len, char quote_char)
 ///////token_utils2.c//////
 ///////////////////////////
 int				extract_token_len(char *input, int *index, int *start);
-char			*extract_token(char *input, int *index);
+char			*extract_token(char *input, int *index, t_shell *shell);
 int				check_quotes(char *input);
-char			**tokenize_command(char *input);	
+char			**tokenize_command(char *input, t_shell *shell);	
 void			handle_word_count(char *str, int *i);
 
 // Exec
@@ -285,5 +286,8 @@ int		execute_pipeline(t_cmd *cmd_list, t_shell *shell);
 char 	*execute_ve_2(t_cmd *cmd, char	*path_env, char	*full_path);
 int		ft_exit(t_cmd *cmd, t_shell *shell);
 
+// expand.c
+
+char	*expand_variables(char *str, t_shell *shell);
 
 #endif

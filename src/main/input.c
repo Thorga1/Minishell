@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   input.c                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: lfirmin <lfirmin@student.42.fr>            +#+  +:+       +#+        */
+/*   By: tordner <tordner@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/30 17:17:15 by lfirmin           #+#    #+#             */
-/*   Updated: 2025/05/29 13:20:41 by lfirmin          ###   ########.fr       */
+/*   Updated: 2025/06/01 23:05:36 by tordner          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,7 +17,7 @@ char	**parse_input(char *input, t_shell *shell)
 	char	**tokens;
 	int		i;
 
-	tokens = tokenize_command(input);
+	tokens = tokenize_command(input, shell);
 	if (!tokens)
 	{
 		printf(ERROR_TOKEN);
