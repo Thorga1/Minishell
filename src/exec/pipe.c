@@ -3,34 +3,45 @@
 /*                                                        :::      ::::::::   */
 /*   pipe.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: lfirmin <lfirmin@student.42.fr>            +#+  +:+       +#+        */
+/*   By: tordner <tordner@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/02 13:25:59 by tordner           #+#    #+#             */
-/*   Updated: 2025/06/01 21:28:31 by lfirmin          ###   ########.fr       */
+/*   Updated: 2025/06/01 22:39:21 by tordner          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../../includes/minishell.h"
 
+int	wait_for_children(pid_t last_pid)
+{
+	int		status;
+	int		exit_status = 0;
+	pid_t	pid;
+
+	while ((pid = wait(&status)) > 0)
+	{
+		if (pid == last_pid)
+		{
+			if (WIFEXITED(status))
+				exit_status = WEXITSTATUS(status);
+			else if (WIFSIGNALED(status))
+				exit_status = 128 + WTERMSIG(status);
+		}
+	}
+	return (exit_status);
+}
+
 void	handle_child(t_cmd *cmd, int infile, int pipefd[2], t_shell *shell)
 {
-	// D'abord, appliquer les redirections d'entrée (< et <<)
-	// Cela peut écraser l'entrée du pipe si nécessaire
 	if (cmd->redir && setup_input_redirections(cmd->redir) != 0)
 		exit(1);
-	
-	// Ensuite, si pas de redirection d'entrée, utiliser l'entrée du pipe
 	if (!has_input_redirection(cmd->redir))
 	{
 		if (dup2(infile, STDIN_FILENO) == -1)
 			exit(1);
 	}
-	
-	// Configurer la sortie du pipe si nécessaire
 	if (cmd->next && dup2(pipefd[1], STDOUT_FILENO) == -1)
 		exit(1);
-	
-	// Fermer les descripteurs inutiles
 	if (infile != STDIN_FILENO)
 		close(infile);
 	if (cmd->next)
@@ -38,12 +49,8 @@ void	handle_child(t_cmd *cmd, int infile, int pipefd[2], t_shell *shell)
 		close(pipefd[0]);
 		close(pipefd[1]);
 	}
-	
-	// Enfin, appliquer les redirections de sortie (> et >>)
-	// Cela peut écraser la sortie du pipe si nécessaire
 	if (cmd->redir && setup_output_redirections(cmd->redir) != 0)
 		exit(1);
-	
 	if (is_builtin(cmd->args[0]))
 		exit(execute_builtin(cmd, shell));
 	execute_ve(cmd, shell->env);
@@ -87,7 +94,6 @@ int	run_child_pipe(t_cmd *cmd, t_shell *shell, int *infile)
 int	spawn_pipeline(t_cmd *cmd, t_shell *shell)
 {
 	int		infile;
-	int		status;
 	int		exit_status;
 
 	shell->child_running = 1;
@@ -102,18 +108,7 @@ int	spawn_pipeline(t_cmd *cmd, t_shell *shell)
 		cmd = cmd->next;
 	}
 	exit_status = 0;
-	while (wait(&status) > 0)
-	{
-		if (WIFEXITED(status))
-			exit_status = WEXITSTATUS(status);
-		else if (WIFSIGNALED(status))
-		{
-			if (WTERMSIG(status) == SIGINT)
-				exit_status = 130;
-			else
-				exit_status = 128 + WTERMSIG(status);
-		}
-	}
+	exit_status = wait_for_children(-1);
 	shell->child_running = 0;
 	return (exit_status);
 }
