@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   tokens.c                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: lfirmin <lfirmin@student.42.fr>            +#+  +:+       +#+        */
+/*   By: tordner <tordner@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/10 17:47:48 by thorgal           #+#    #+#             */
-/*   Updated: 2025/05/29 14:24:34 by lfirmin          ###   ########.fr       */
+/*   Updated: 2025/06/02 01:15:26 by tordner          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,8 +24,8 @@ int	extract_quoted_token(char *input, int *index, char quote_char)
 		{
 			if (quote_char == '"')
 			{
-				if (input[*index + 1] == '"' || input[*index + 1] == '\\' || 
-					input[*index + 1] == '$' || input[*index + 1] == '`' || 
+				if (input[*index + 1] == '"' || input[*index + 1] == '\\' || \
+					input[*index + 1] == '$' || input[*index + 1] == '`' || \
 					input[*index + 1] == '\n')
 				{
 					(*index) += 2;
@@ -61,7 +61,8 @@ int	is_special(char c)
 	return (c == '|' || c == '<' || c == '>');
 }
 
-char	*extract_quoted_content(char *input, int start, int len, char quote_char)
+char	*extract_quoted_content(char *input, int start, int
+len, char quote_char)
 {
 	char	*content;
 	int		i;
@@ -78,8 +79,8 @@ char	*extract_quoted_content(char *input, int start, int len, char quote_char)
 		{
 			if (quote_char == '"')
 			{
-				if (input[i + 1] == '"' || input[i + 1] == '\\' || 
-					input[i + 1] == '$' || input[i + 1] == '`' || 
+				if (input[i + 1] == '"' || input[i + 1] == '\\' || \
+					input[i + 1] == '$' || input[i + 1] == '`' || \
 					input[i + 1] == '\n')
 				{
 					content[j++] = input[i + 1];
@@ -119,23 +120,4 @@ void	skip_delimiters(char *str, int *i)
 {
 	while (str[*i] && is_delimiter(str[*i]))
 		(*i)++;
-}
-
-void	debug_tokens(char **tokens)
-{
-	int	i;
-
-	if (!tokens)
-	{
-		printf("DEBUG: tokens = NULL\n");
-		return ;
-	}
-	printf("DEBUG: Tokens array:\n");
-	i = 0;
-	while (tokens[i])
-	{
-		printf("  [%d]: '%s'\n", i, tokens[i]);
-		i++;
-	}
-	printf("  Total tokens: %d\n", i);
 }

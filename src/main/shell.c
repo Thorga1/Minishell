@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   shell.c                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: lfirmin <lfirmin@student.42.fr>            +#+  +:+       +#+        */
+/*   By: tordner <tordner@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/21 15:38:19 by lfirmin           #+#    #+#             */
-/*   Updated: 2025/06/01 21:32:21 by lfirmin          ###   ########.fr       */
+/*   Updated: 2025/06/02 00:57:29 by tordner          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -55,7 +55,7 @@ char	*generate_prompt(t_shell *shell)
 		return (ft_strdup("➜  ❯ "));
 }
 
-void handle_input(char *input, t_shell *shell)
+void	handle_input(char *input, t_shell *shell)
 {
 	int	i;
 
@@ -71,9 +71,9 @@ void handle_input(char *input, t_shell *shell)
 
 void	minishell_loop(t_shell *shell)
 {
-	struct termios term;
-	char	*prompt;
-	char	*input;
+	struct termios	term;
+	char			*prompt;
+	char			*input;
 
 	tcgetattr(STDIN_FILENO, &term);
 	tcsetattr(STDIN_FILENO, TCSANOW, &term);

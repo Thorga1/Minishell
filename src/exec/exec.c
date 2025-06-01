@@ -3,26 +3,16 @@
 /*                                                        :::      ::::::::   */
 /*   exec.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: lfirmin <lfirmin@student.42.fr>            +#+  +:+       +#+        */
+/*   By: tordner <tordner@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/02 13:25:52 by tordner           #+#    #+#             */
-/*   Updated: 2025/06/01 21:28:08 by lfirmin          ###   ########.fr       */
+/*   Updated: 2025/06/02 00:42:21 by tordner          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../../includes/minishell.h"
 #include <signal.h>
 #include <sys/stat.h>
-
-int	setup_pipe(int pipefd[2])
-{
-	if (pipe(pipefd) == -1)
-	{
-		write(2, "Error creating pipe\n", 21);
-		return (1);
-	}
-	return (0);
-}
 
 int	file_exists(const char *path)
 {
@@ -31,8 +21,8 @@ int	file_exists(const char *path)
 
 int	execute_ve(t_cmd *cmd, char **envp)
 {
-	char	*full_path;
-	char	*path_env;
+	char		*full_path;
+	char		*path_env;
 	struct stat	file_stat;
 
 	full_path = NULL;
@@ -44,7 +34,8 @@ int	execute_ve(t_cmd *cmd, char **envp)
 			write(2, ": No such file or directory\n", 28);
 			exit(127);
 		}
-		else if (stat(cmd->args[0], &file_stat) == 0 && S_ISDIR(file_stat.st_mode))
+		else if (stat(cmd->args[0], &file_stat) == 0 \
+		&& S_ISDIR(file_stat.st_mode))
 		{
 			write(2, cmd->args[0], ft_strlen(cmd->args[0]));
 			write(2, ": Is a directory\n", 17);
@@ -63,7 +54,7 @@ int	execute_ve(t_cmd *cmd, char **envp)
 	exit(126);
 }
 
-char *execute_ve_2(t_cmd *cmd, char	*path_env, char	*full_path)
+char	*execute_ve_2(t_cmd *cmd, char	*path_env, char	*full_path)
 {
 	if (!path_env)
 	{

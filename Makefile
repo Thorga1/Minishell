@@ -3,10 +3,10 @@
 #                                                         :::      ::::::::    #
 #    Makefile                                           :+:      :+:    :+:    #
 #                                                     +:+ +:+         +:+      #
-#    By: lfirmin <lfirmin@student.42.fr>            +#+  +:+       +#+         #
+#    By: tordner <tordner@student.42.fr>            +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2025/01/29 17:32:15 by thorgal           #+#    #+#              #
-#    Updated: 2025/06/02 00:08:22 by lfirmin          ###   ########.fr        #
+#    Updated: 2025/06/02 01:08:18 by tordner          ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -25,6 +25,7 @@ INCDIR = includes
 SRCS = 	$(SRCDIR)/main/main.c \
 		$(SRCDIR)/main/shell.c \
 		$(SRCDIR)/main/signals.c \
+		$(SRCDIR)/main/signals_utils.c \
 		$(SRCDIR)/utils/utils.c \
 		$(SRCDIR)/utils/free.c \
 		$(SRCDIR)/main/input.c \
@@ -51,6 +52,7 @@ SRCS = 	$(SRCDIR)/main/main.c \
 		$(SRCDIR)/builtins/export_utils.c \
 		$(SRCDIR)/builtins/export_utils2.c \
 		$(SRCDIR)/builtins/exit.c	\
+		$(SRCDIR)/exec/exec_utils.c	\
 		$(SRCDIR)/tokens/expander.c
 	
 OBJS = $(SRCS:$(SRCDIR)/%.c=$(OBJDIR)/%.o)

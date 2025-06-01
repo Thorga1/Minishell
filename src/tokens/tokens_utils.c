@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   tokens_utils.c                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: lfirmin <lfirmin@student.42.fr>            +#+  +:+       +#+        */
+/*   By: tordner <tordner@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/04 17:21:22 by thorgal           #+#    #+#             */
-/*   Updated: 2025/05/26 17:42:37 by lfirmin          ###   ########.fr       */
+/*   Updated: 2025/06/02 01:16:20 by tordner          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,9 +21,8 @@ void	handle_quoted_count(char *str, int *i, char quote)
 		{
 			if (quote == '"')
 			{
-				// Dans les double quotes, on peut échapper: " \ $ ` newline
-				if (str[*i + 1] == '"' || str[*i + 1] == '\\' || 
-					str[*i + 1] == '$' || str[*i + 1] == '`' || 
+				if (str[*i + 1] == '"' || str[*i + 1] == '\\' || \
+					str[*i + 1] == '$' || str[*i + 1] == '`' || \
 					str[*i + 1] == '\n')
 				{
 					(*i) += 2;
@@ -31,10 +30,9 @@ void	handle_quoted_count(char *str, int *i, char quote)
 				}
 			}
 			else if (quote == '\'' && str[*i + 1] == '\'')
-		{
-				// Dans les single quotes, seul \' peut être échappé
-			(*i) += 2;
-			continue ;
+			{
+				(*i) += 2;
+				continue ;
 			}
 		}
 		if (str[*i] == quote)

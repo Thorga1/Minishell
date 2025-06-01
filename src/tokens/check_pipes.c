@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   check_pipes.c                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: lfirmin <lfirmin@student.42.fr>            +#+  +:+       +#+        */
+/*   By: tordner <tordner@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/06 16:55:42 by tordner           #+#    #+#             */
-/*   Updated: 2025/06/01 01:06:39 by lfirmin          ###   ########.fr       */
+/*   Updated: 2025/06/02 01:09:51 by tordner          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -35,6 +35,8 @@ int	check_before_pipe(char **tokens)
 int	pipe_sequence_invalid(char **tokens)
 {
 	int	i;
+	int	j;
+	int	has_command;
 
 	i = 0;
 	while (tokens[i])
@@ -51,23 +53,18 @@ int	pipe_sequence_invalid(char **tokens)
 	{
 		if (classify_token(tokens[i]) == TOKEN_PIPE && tokens[i + 1])
 		{
-			// Après un pipe, on peut avoir des redirections suivies d'une commande
-			// Il faut juste s'assurer qu'il y a au moins une commande dans le segment
-			int j = i + 1;
-			int has_command = 0;
-			
-			// Parcourir le segment après le pipe pour vérifier qu'il y a une commande
+			j = i + 1;
+			has_command = 0;
 			while (tokens[j] && classify_token(tokens[j]) != TOKEN_PIPE)
 			{
 				if (classify_token(tokens[j]) == TOKEN_WORD)
 				{
-					// Vérifier que ce n'est pas juste un argument de redirection
-					if (j == i + 1 || classify_token(tokens[j - 1]) == TOKEN_WORD)
+					if (j == i + 1 \
+						|| classify_token(tokens[j - 1]) == TOKEN_WORD)
 						has_command = 1;
 				}
 				j++;
 			}
-			
 			if (!has_command)
 				return (1);
 		}

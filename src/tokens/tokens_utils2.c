@@ -6,7 +6,7 @@
 /*   By: tordner <tordner@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/23 03:25:24 by lfirmin           #+#    #+#             */
-/*   Updated: 2025/06/01 23:20:32 by tordner          ###   ########.fr       */
+/*   Updated: 2025/06/02 01:18:19 by tordner          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,22 +14,24 @@
 
 int	extract_token_len(char *input, int *index, int *start)
 {
-	int	token_len;
+	int		token_len;
+	char	quote;
 
 	while (input[*index] && (input[*index] == ' ' || input[*index] == '\t'))
 		(*index)++;
 	*start = *index;
 	if (input[*index] == '\'' || input[*index] == '\"')
-		token_len = handle_quoted_token(input, index, start); 
+		token_len = handle_quoted_token(input, index, start);
 	else if (is_special(input[*index]))
 		token_len = handle_special_token(input, index);
 	else
 	{
-		while (input[*index] && !is_delimiter(input[*index]) && !is_special(input[*index]))
+		while (input[*index] && !is_delimiter(input[*index]) \
+		&& !is_special(input[*index]))
 		{
 			if (input[*index] == '\'' || input[*index] == '\"')
 			{
-				char quote = input[*index];
+				quote = input[*index];
 				(*index)++;
 				while (input[*index] && input[*index] != quote)
 					(*index)++;
@@ -54,9 +56,9 @@ char	*extract_token(char *input, int *index, t_shell *shell)
 
 	shell->single_quoted_token = -1;
 	temp_index = *index;
-	while (input[temp_index] && (input[temp_index] == ' ' || input[temp_index] == '\t'))
+	while (input[temp_index] && (input[temp_index] == ' ' \
+		|| input[temp_index] == '\t'))
 		temp_index++;
-	
 	token_len = extract_token_len(input, index, &start);
 	if (token_len == -1)
 		return (NULL);
@@ -140,11 +142,13 @@ char	**tokenize_command(char *input, t_shell *shell)
 
 void	handle_word_count(char *str, int *i)
 {
+	char	quote;
+
 	while (str[*i] && !is_delimiter(str[*i]) && !is_special(str[*i]))
 	{
 		if (str[*i] == '\'' || str[*i] == '\"')
 		{
-			char quote = str[*i];
+			quote = str[*i];
 			(*i)++;
 			while (str[*i] && str[*i] != quote)
 				(*i)++;

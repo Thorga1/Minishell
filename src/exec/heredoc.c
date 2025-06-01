@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   heredoc.c                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: root <root@student.42.fr>                  +#+  +:+       +#+        */
+/*   By: tordner <tordner@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/23 01:17:12 by lfirmin           #+#    #+#             */
-/*   Updated: 2025/05/16 03:29:50 by root             ###   ########.fr       */
+/*   Updated: 2025/06/02 00:46:04 by tordner          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,12 +30,12 @@ int	handle_heredoc(char *delim)
 		if (!line)
 		{
 			write(2, "warning: here-document delimited by end-of-file\n", 48);
-			break;
+			break ;
 		}
 		if (ft_strcmp(line, delim) == 0)
 		{
 			free(line);
-			break;
+			break ;
 		}
 		write(pipefd[1], line, ft_strlen(line));
 		write(pipefd[1], "\n", 1);

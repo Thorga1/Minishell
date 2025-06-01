@@ -3,17 +3,17 @@
 /*                                                        :::      ::::::::   */
 /*   messages.h                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: lfirmin <lfirmin@student.42.fr>            +#+  +:+       +#+        */
+/*   By: tordner <tordner@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/21 15:38:19 by lfirmin           #+#    #+#             */
-/*   Updated: 2025/05/29 14:26:13 by lfirmin          ###   ########.fr       */
+/*   Updated: 2025/06/02 00:35:25 by tordner          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #ifndef MESSAGES_H
 # define MESSAGES_H
 
-#include "minishell.h"
+# include "minishell.h"
 
 # define RED "\001\033[1;31m\002"
 # define GREEN "\001\033[1;32m\002"
@@ -26,7 +26,9 @@
 # define WELCOME_MESS "Welcome to our MiniShell.\n"
 # define ERROR_TOKEN "Error: Tokenization failed\n"
 # define ERROR_NOT_FOUND "Command not found: %s\n"
-# define PROMPT_GIT "➜\001\033[0m\002  \001\033[1;36m\002%s\001\033[0m\002 \001\033[1;32m\002git:(\001\033[1;31m\002%s\001\033[1;32m\002)\001\033[0m\002 ❯ "
+# define PROMPT_GIT "➜\001\033[0m\002  \001\033[1;36m\002%s\001\033[0\
+m\002 \001\033[1;32m\002git:(\001\033[1;31m\002%s\001\033[1;\
+32m\002)\001\033[0m\002 ❯ "
 # define PROMPT_STD "➜\001\033[0m\002  \001\033[1;36m\002%s\001\033[0m\002 ❯ "
 
 void	debug_tokens(char **tokens);

@@ -3,37 +3,16 @@
 /*                                                        :::      ::::::::   */
 /*   signals.c                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: lfirmin <lfirmin@student.42.fr>            +#+  +:+       +#+        */
+/*   By: tordner <tordner@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/27 00:00:00 by lfirmin           #+#    #+#             */
-/*   Updated: 2025/06/01 20:53:43 by lfirmin          ###   ########.fr       */
+/*   Updated: 2025/06/02 01:05:49 by tordner          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../../includes/minishell.h"
 
-int g_signal = 0;
-
-void	check_if_signal(t_shell *shell)
-{
-	if (shell->signaled == 1 && g_signal == 128 + SIGQUIT)
-		ft_putstr_fd("Quit (core dumped)\n", 2);
-	if (g_signal == 128 + SIGINT && shell->signaled == 1)
-		write(STDERR_FILENO, "\n", 1);
-	if (shell->exit_status == 128 + SIGSEGV && shell->signaled == 1)
-		ft_putstr_fd("Segmentation fault (core dumped)\n", STDERR_FILENO);
-	g_signal = 0;
-}
-
-void	handle_signal_parent(int num)
-{
-	g_signal = num + 128;
-}
-
-int	sig_event(void)
-{
-	return (EXIT_SUCCESS);
-}
+int	g_signal = 0;
 
 void	if_sigint(int sig)
 {
@@ -82,4 +61,4 @@ void	set_signal_parent(void)
 	sigaction(SIGINT, &sa, NULL);
 	signal(SIGQUIT, SIG_IGN);
 	signal(SIGTSTP, SIG_IGN);
-} 
+}
