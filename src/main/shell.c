@@ -6,13 +6,13 @@
 /*   By: lfirmin <lfirmin@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/21 15:38:19 by lfirmin           #+#    #+#             */
-/*   Updated: 2025/05/29 13:07:37 by lfirmin          ###   ########.fr       */
+/*   Updated: 2025/06/01 21:32:21 by lfirmin          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../includes/minishell.h"
 
-int g_child_running = 0;
+// int g_child_running = 0;
 
 char	*create_standard_prompt(char *dir_name, int exit_status)
 {
@@ -55,20 +55,6 @@ char	*generate_prompt(t_shell *shell)
 		return (ft_strdup("➜  ❯ "));
 }
 
-void sigint_handler(int sig)
-{
-	(void)sig;
-	if (g_child_running)
-	{
-		write(1, "\n", 1);
-		return;
-	}
-	write(1, "\n", 1);
-	rl_on_new_line();
-	rl_replace_line("", 0);
-	rl_redisplay();
-}
-
 void handle_input(char *input, t_shell *shell)
 {
 	int	i;
@@ -89,15 +75,12 @@ void	minishell_loop(t_shell *shell)
 	char	*prompt;
 	char	*input;
 
-	rl_catch_signals = 0;
 	tcgetattr(STDIN_FILENO, &term);
-	// term.c_lflag &= ~ECHOCTL;
 	tcsetattr(STDIN_FILENO, TCSANOW, &term);
 	rl_initialize();
 	while (shell->running)
 	{
-		signal(SIGINT, sigint_handler);
-		signal(SIGQUIT, SIG_IGN);
+		set_signal_parent();
 		prompt = generate_prompt(shell);
 		input = readline(prompt);
 		free(prompt);
@@ -106,9 +89,10 @@ void	minishell_loop(t_shell *shell)
 			printf("exit\n");
 			break ;
 		}
+		if (g_signal)
+			set_status_if_signal(shell);
 		handle_input(input, shell);
 		free(input);
-		if (shell->exit_status == 130)
-			shell->exit_status = 130;
+		check_if_signal(shell);
 	}
 }

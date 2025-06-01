@@ -6,15 +6,13 @@
 /*   By: lfirmin <lfirmin@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/02 13:25:52 by tordner           #+#    #+#             */
-/*   Updated: 2025/05/29 13:46:42 by lfirmin          ###   ########.fr       */
+/*   Updated: 2025/06/01 21:28:08 by lfirmin          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../../includes/minishell.h"
 #include <signal.h>
 #include <sys/stat.h>
-
-extern int g_child_running;
 
 int	setup_pipe(int pipefd[2])
 {
@@ -88,18 +86,18 @@ void	run_child_process(t_cmd *cmd, char **envp)
 	execute_ve(cmd, envp);
 }
 
-int	ft_exec(t_cmd *cmd, char **envp)
+int	ft_exec(t_cmd *cmd, char **envp, t_shell *shell)
 {
 	pid_t	pid;
 	int		status;
 	int		exit_status;
 
-	g_child_running = 1;
+	shell->child_running = 1;
 	pid = fork();
 	if (pid == -1)
 	{
 		write(2, "Error forking process\n", 23);
-		g_child_running = 0;
+		shell->child_running = 0;
 		return (1);
 	}
 	if (pid == 0)
@@ -112,7 +110,7 @@ int	ft_exec(t_cmd *cmd, char **envp)
 		run_child_process(cmd, envp);
 	}
 	waitpid(pid, &status, 0);
-	g_child_running = 0;
+	shell->child_running = 0;
 	if (WIFEXITED(status))
 		exit_status = WEXITSTATUS(status);
 	else if (WIFSIGNALED(status))

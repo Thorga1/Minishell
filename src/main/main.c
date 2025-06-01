@@ -6,7 +6,7 @@
 /*   By: lfirmin <lfirmin@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/30 17:17:15 by lfirmin           #+#    #+#             */
-/*   Updated: 2025/05/19 07:41:42 by lfirmin          ###   ########.fr       */
+/*   Updated: 2025/06/01 21:32:22 by lfirmin          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,6 +17,7 @@ void	initialize_shell(t_shell *shell, char **envp)
 	shell->env = copy_env(envp);
 	shell->exit_status = 0;
 	shell->running = 1;
+	shell->signaled = 0;
 }
 
 int	is_builtin(char *cmd)
@@ -71,7 +72,7 @@ int	execute_command(t_cmd *cmd, t_shell *shell)
 		close(saved_stdout);
 	}
 	else
-		shell->exit_status = ft_exec(cmd, shell->env);
+		shell->exit_status = ft_exec(cmd, shell->env, shell);
 	return (shell->exit_status);
 }
 

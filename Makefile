@@ -3,10 +3,10 @@
 #                                                         :::      ::::::::    #
 #    Makefile                                           :+:      :+:    :+:    #
 #                                                     +:+ +:+         +:+      #
-#    By: root <root@student.42.fr>                  +#+  +:+       +#+         #
+#    By: lfirmin <lfirmin@student.42.fr>            +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2025/01/29 17:32:15 by thorgal           #+#    #+#              #
-#    Updated: 2025/05/17 22:21:49 by root             ###   ########.fr        #
+#    Updated: 2025/06/01 21:32:21 by lfirmin          ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -24,6 +24,7 @@ INCDIR = includes
 
 SRCS = 	$(SRCDIR)/main/main.c \
 		$(SRCDIR)/main/shell.c \
+		$(SRCDIR)/main/signals.c \
 		$(SRCDIR)/utils/utils.c \
 		$(SRCDIR)/utils/free.c \
 		$(SRCDIR)/main/input.c \

@@ -6,7 +6,7 @@
 /*   By: lfirmin <lfirmin@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/05 15:00:11 by thorgal           #+#    #+#             */
-/*   Updated: 2025/06/01 00:59:23 by lfirmin          ###   ########.fr       */
+/*   Updated: 2025/06/01 21:56:14 by lfirmin          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,6 +33,11 @@
 # include <signal.h>
 # include <termios.h>
 # include "messages.h"
+
+////////////////////////////////////////////////////////////////
+////////////////////////////GLOBALS/////////////////////////////
+////////////////////////////////////////////////////////////////
+extern int g_signal;
 
 ////////////////////////////////////////////////////////////////
 ////////////////////////////ENUM////////////////////////////////
@@ -69,6 +74,8 @@ typedef struct s_shell
 	char    **env;
 	int     exit_status;
 	int     running;
+	int     signaled;
+	int     child_running;
 } t_shell;
 
 ////////////////////////////////////////////////////////////////
@@ -94,12 +101,22 @@ void			process_input(char *input, t_shell *shell);
 ///////shell.c///////
 /////////////////////
 void			minishell_loop(t_shell *shell);	
-void			sigint_handler(int sig);
 void			handle_input(char *input, t_shell *shell);
 char			*generate_prompt(t_shell *shell);
 char			*create_git_prompt(char *dir_name, int exit_status);
 char			*create_standard_prompt(char *dir_name, int exit_status);
 
+/////////////////////
+///////signals.c/////
+/////////////////////
+void			check_if_signal(t_shell *shell);
+void			handle_signal_parent(int num);
+int				sig_event(void);
+void			if_sigint(int sig);
+void			set_status_if_signal(t_shell *shell);
+void			set_signal_child(void);
+void			set_signal_parent_exec(void);
+void			set_signal_parent(void);
 
 /////////////////////////////////////////////////////////////////
 ////////////////////////////UTILS////////////////////////////////
@@ -126,48 +143,60 @@ void			*free_tokens(char **tokens, int count);
 ///////////////////
 ///////pwd.c///////
 ///////////////////
-int				ft_pwd(void);
+int ft_pwd(void);
 
 //////////////////
 ///////cd.c///////
 //////////////////
-int				ft_cd(t_cmd *cmd, t_shell *shell);
+int handle_home_directory(t_shell *shell);
+int handle_previous_directory(t_shell *shell);
+int update_pwd_env(t_shell *shell);
+char*resolve_env_variables(char *path, t_shell *shell);
+char*expand_tilde(char *path, t_shell *shell);
+int ft_cd(t_cmd *cmd, t_shell *shell);
 
 //////////////////
 ///////env.c//////
 //////////////////
-int				ft_env(t_shell *shell, t_cmd *cmd);
+int ft_env(t_shell *shell, t_cmd *cmd);
 
 //////////////////
 ///////export.c///
 //////////////////
-int				ft_export(t_shell *shell, t_cmd *cmd);
-int				process_export_args(t_shell *shell, char **args, int i);
-int				update_env_var(char **env, char *var);
-char			**add_env_var(char **env, char *new_var);
-int				is_valid_identifier(char *str);
+int ft_export(t_shell *shell, t_cmd *cmd);
+int process_export_args(t_shell *shell, char **args, int i);
+int update_env_var(char **env, char *var);
+char**add_env_var(char **env, char *new_var);
+int is_valid_identifier(char *str);
 
 //////////////////
 ///////unset.c////
 //////////////////
-int				delete_line(char **array, int index);
-int				find_env_var(char **env, char *var);
-int				ft_unset(t_shell *shell, t_cmd *cmd);
+int delete_line(char **array, int index);
+int find_env_var(char **env, char *var);
+int ft_unset(t_shell *shell, t_cmd *cmd);
 
 //////////////////
 ///////echo.c/////
 //////////////////
-char			*get_env_value(char *var_name, t_shell *shell);
-int				is_env_var(char *str);
-void			print_echo_args(char **args, int i, t_shell *shell, int first);
-int				ft_echo(t_cmd *cmd, t_shell *shell);
+char*get_env_value(char *var_name, t_shell *shell);
+int is_env_var(char *str);
+void print_echo_args(char **args, int i, t_shell *shell, int first);
+int ft_echo(t_cmd *cmd, t_shell *shell);
 
 /////////////////////////
 ///////export_utils.c////
 /////////////////////////
-int				handle_env_var(t_shell *shell, char *arg);
-char			*handle_quotes_in_env_var(char *arg);
+int handle_env_var(t_shell *shell, char *arg);
+char*handle_quotes_in_env_var(char *arg);
 
+/////////////////////////
+///////export_utils2.c////
+/////////////////////////
+char*find_next_var(char *result, char **var_start, char **var_end);
+char*build_expanded_string(char *result, char *var_start, char *var_end, char *var_value);
+char*extract_var_name(char *result, char *var_start, char *var_end);
+char*get_env_value_for_expansion(char **env, char *var_name);
 
 /////////////////////////////////////////////////////////////////
 ////////////////////////////TOKENS///////////////////////////////
@@ -248,7 +277,7 @@ int		has_input_redirection(t_redirection *redir);
 void	close_files(int infile, int outfile);
 char	*find_command(char **paths, char *cmd);
 char	*get_path_env(char **envp);
-int		ft_exec(t_cmd *cmd, char **envp);
+int		ft_exec(t_cmd *cmd, char **envp, t_shell *shell);
 int		execute_ve(t_cmd *cmd, char **envp);
 int		loop_open_files(t_cmd *cmd);
 int		handle_heredoc(char *delim);
