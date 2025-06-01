@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   exit.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: lfirmin <lfirmin@student.42.fr>            +#+  +:+       +#+        */
+/*   By: tordner <tordner@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/19 10:00:00 by lfirmin           #+#    #+#             */
-/*   Updated: 2025/06/01 00:54:39 by lfirmin          ###   ########.fr       */
+/*   Updated: 2025/06/01 21:30:31 by tordner          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -113,4 +113,4 @@ int	ft_exit(t_cmd *cmd, t_shell *shell)
 	shell->exit_status = exit_code;
 	shell->running = 0;
 	return (exit_code);
-} 
+}

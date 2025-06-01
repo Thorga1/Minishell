@@ -3,59 +3,16 @@
 /*                                                        :::      ::::::::   */
 /*   cd.c                                               :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: lfirmin <lfirmin@student.42.fr>            +#+  +:+       +#+        */
+/*   By: tordner <tordner@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/23 11:41:05 by lfirmin           #+#    #+#             */
-/*   Updated: 2025/05/19 07:40:02 by lfirmin          ###   ########.fr       */
+/*   Updated: 2025/06/01 21:35:36 by tordner          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../../includes/minishell.h"
 
-static int	handle_home_directory(t_shell *shell)
-{
-	char	*home;
-
-	home = ft_get_env_var(shell->env, "HOME");
-	if (home == NULL)
-	{
-		ft_putendl_fd("cd: HOME not set", STDERR_FILENO);
-		return (1);
-	}
-	if (chdir(home) == -1)
-	{
-		ft_putstr_fd("cd: ", STDERR_FILENO);
-		ft_putstr_fd(home, STDERR_FILENO);
-		ft_putstr_fd(": ", STDERR_FILENO);
-		perror("");
-		return (1);
-	}
-	return (0);
-}
-
-static int	handle_previous_directory(t_shell *shell)
-{
-	char	*oldpwd;
-
-	oldpwd = ft_get_env_var(shell->env, "OLDPWD");
-	if (oldpwd == NULL)
-	{
-		ft_putendl_fd("cd: OLDPWD not set", STDERR_FILENO);
-		return (1);
-	}
-	ft_putendl_fd(oldpwd, STDOUT_FILENO);
-	if (chdir(oldpwd) == -1)
-	{
-		ft_putstr_fd("cd: ", STDERR_FILENO);
-		ft_putstr_fd(oldpwd, STDERR_FILENO);
-		ft_putstr_fd(": ", STDERR_FILENO);
-		perror("");
-		return (1);
-	}
-	return (0);
-}
-
-static int	update_pwd_env(t_shell *shell)
+int	update_pwd_env(t_shell *shell)
 {
 	char	cwd[PATH_MAX];
 	char	*old_pwd;
@@ -84,7 +41,7 @@ static int	update_pwd_env(t_shell *shell)
 	return (1);
 }
 
-static char	*resolve_env_variables(char *path, t_shell *shell)
+char	*resolve_env_variables(char *path, t_shell *shell)
 {
 	char	*result;
 	char	*env_value;
@@ -115,27 +72,23 @@ static char	*resolve_env_variables(char *path, t_shell *shell)
 	return (ft_strdup(env_value));
 }
 
-static char	*expand_tilde(char *path, t_shell *shell)
+char	*expand_tilde(char *path, t_shell *shell)
 {
 	char	*home;
 	char	*result;
 
 	if (!path || path[0] != '~')
 		return (ft_strdup(path));
-	
 	home = ft_get_env_var(shell->env, "HOME");
 	if (!home)
 		return (ft_strdup(path));
-	
 	if (path[1] == '\0')
 		return (ft_strdup(home));
-	
 	if (path[1] == '/')
 	{
 		result = ft_strjoin(home, path + 1);
 		return (result);
 	}
-	
 	return (ft_strdup(path));
 }
 
@@ -176,7 +129,6 @@ int	ft_cd(t_cmd *cmd, t_shell *shell)
 	}
 	else
 		resolved_path = ft_strdup(path);
-	
 	if (chdir(resolved_path) == -1)
 	{
 		ft_putstr_fd("cd: ", STDERR_FILENO);

@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   export.c                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: lfirmin <lfirmin@student.42.fr>            +#+  +:+       +#+        */
+/*   By: tordner <tordner@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/23 11:54:38 by lfirmin           #+#    #+#             */
-/*   Updated: 2025/05/29 14:06:21 by lfirmin          ###   ########.fr       */
+/*   Updated: 2025/06/01 21:30:55 by tordner          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,7 +19,7 @@ int	is_valid_identifier(char *str)
 	if (!str || !*str)
 		return (0);
 	if (str[0] == '-')
-		return (-1);  // Retourne -1 pour les options (commençant par -)
+		return (-1);
 	if (!((str[0] >= 'a' && str[0] <= 'z')
 			|| (str[0] >= 'A' && str[0] <= 'Z')
 			|| str[0] == '_'))
@@ -34,9 +34,6 @@ int	is_valid_identifier(char *str)
 			return (0);
 		i++;
 	}
-	// Si on arrive ici, soit on a atteint la fin de la chaîne (pas de =)
-	// soit on a trouvé un = et tout ce qui précède est valide
-	// Dans les deux cas, c'est un identifiant valide
 	return (1);
 }
 
@@ -112,7 +109,7 @@ int	process_export_args(t_shell *shell, char **args, int i)
 			if (validity == -1)
 			{
 				ft_putstr_fd("': option invalide\n", 2);
-				return (2);  // Retourner 2 pour les options non valides
+				return (2);
 			}
 			else
 				ft_putstr_fd("': not a valid identifier\n", 2);
