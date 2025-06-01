@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   expander.c                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: tordner <tordner@student.42.fr>            +#+  +:+       +#+        */
+/*   By: lfirmin <lfirmin@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/01 22:59:57 by tordner           #+#    #+#             */
-/*   Updated: 2025/06/01 23:08:55 by tordner          ###   ########.fr       */
+/*   Updated: 2025/06/02 00:24:00 by lfirmin          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,6 +25,8 @@ char	*expand_variables(char *str, t_shell *shell)
 				i++;
 			char	*var = ft_substr(str, start, i - start);
 			char	*val = get_env_value(var, shell);
+			if (!val)
+				val = "";
 			char	*tmp = ft_strjoin(result, val);
 			free(result);
 			result = tmp;

@@ -3,10 +3,10 @@
 #                                                         :::      ::::::::    #
 #    Makefile                                           :+:      :+:    :+:    #
 #                                                     +:+ +:+         +:+      #
-#    By: tordner <tordner@student.42.fr>            +#+  +:+       +#+         #
+#    By: lfirmin <lfirmin@student.42.fr>            +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2025/01/29 17:32:15 by thorgal           #+#    #+#              #
-#    Updated: 2025/06/01 23:09:42 by tordner          ###   ########.fr        #
+#    Updated: 2025/06/02 00:08:22 by lfirmin          ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -35,7 +35,6 @@ SRCS = 	$(SRCDIR)/main/main.c \
 		$(SRCDIR)/tokens/check_redirections.c \
 		$(SRCDIR)/tokens/token_list.c \
 		$(SRCDIR)/builtins/echo.c \
-		$(SRCDIR)/builtins/echo_utils.c \
 		$(SRCDIR)/builtins/cd.c \
 		$(SRCDIR)/builtins/cd_utils.c \
 		$(SRCDIR)/builtins/pwd.c \

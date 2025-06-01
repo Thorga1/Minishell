@@ -6,7 +6,7 @@
 /*   By: lfirmin <lfirmin@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/04 15:49:05 by thorgal           #+#    #+#             */
-/*   Updated: 2025/05/06 21:52:51 by lfirmin          ###   ########.fr       */
+/*   Updated: 2025/06/02 00:14:33 by lfirmin          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -69,41 +69,33 @@ char	**copy_env(char **envp)
 	return (env);
 }
 
-// int	is_git_repository(void)
-// {
-// 	FILE	*fp;
-// 	int		result;
-// 	char	line[10];
+char	*get_env_value(char *var_name, t_shell *shell)
+{
+	int	i;
+	int	var_len;
 
-// 	result = 0;
-// 	fp = popen("git rev-parse --is-inside-work-tree 2>/dev/null", "r");
-// 	if (fp != NULL)
-// 	{
-// 		if (fgets(line, sizeof(line), fp) != NULL)
-// 		{
-// 			if (strncmp(line, "true", 4) == 0)
-// 				result = 1;
-// 		}
-// 		pclose(fp);
-// 	}
-// 	return (result);
-// }
-
-// char	*get_git_branch(void)
-// {
-// 	FILE	*fp;
-// 	char	*branch;
-// 	char	line[1024];
-
-// 	branch = NULL;
-// 	fp = popen("git branch 2>/dev/null | grep \\* | cut -d ' ' -f2", "r");
-// 	if (fp == NULL)
-// 		return (NULL);
-// 	if (fgets(line, sizeof(line), fp) != NULL)
-// 	{
-// 		line[strcspn(line, "\n")] = 0;
-// 		branch = ft_strdup(line);
-// 	}
-// 	pclose(fp);
-// 	return (branch);
-// }
+	if (!var_name || !shell || !shell->env)
+		return (NULL);
+	if (var_name[0] == '$')
+		var_name++;
+	if (var_name[0] == '?')
+	{
+		printf("%d", shell->exit_status);
+		return (0);
+	}
+	var_len = 0;
+	while (var_name[var_len] && (ft_isalnum(var_name[var_len]) \
+	|| var_name[var_len] == '_'))
+		var_len++;
+	if (var_len == 0)
+		return (NULL);
+	i = 0;
+	while (shell->env[i])
+	{
+		if (ft_strncmp(shell->env[i], var_name, var_len) == 0
+			&& shell->env[i][var_len] == '=')
+			return (shell->env[i] + var_len + 1);
+		i++;
+	}
+	return (NULL);
+}

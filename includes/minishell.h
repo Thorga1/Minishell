@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   minishell.h                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: tordner <tordner@student.42.fr>            +#+  +:+       +#+        */
+/*   By: lfirmin <lfirmin@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/05 15:00:11 by thorgal           #+#    #+#             */
-/*   Updated: 2025/06/01 23:19:10 by tordner          ###   ########.fr       */
+/*   Updated: 2025/06/02 00:26:19 by lfirmin          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -180,9 +180,7 @@ int ft_unset(t_shell *shell, t_cmd *cmd);
 //////////////////
 ///////echo.c/////
 //////////////////
-char*get_env_value(char *var_name, t_shell *shell);
-int is_env_var(char *str);
-void print_echo_args(char **args, int i, t_shell *shell, int first);
+void print_echo_args(char **args, int i, int first);
 int ft_echo(t_cmd *cmd, t_shell *shell);
 
 /////////////////////////
@@ -289,5 +287,5 @@ int		ft_exit(t_cmd *cmd, t_shell *shell);
 // expand.c
 
 char	*expand_variables(char *str, t_shell *shell);
-
+char	*get_env_value(char *var, t_shell *shell);
 #endif
