@@ -3,10 +3,10 @@
 #                                                         :::      ::::::::    #
 #    Makefile                                           :+:      :+:    :+:    #
 #                                                     +:+ +:+         +:+      #
-#    By: lfirmin <lfirmin@student.42.fr>            +#+  +:+       +#+         #
+#    By: tordner <tordner@student.42.fr>            +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2025/01/29 17:32:15 by thorgal           #+#    #+#              #
-#    Updated: 2025/06/01 21:32:21 by lfirmin          ###   ########.fr        #
+#    Updated: 2025/06/01 22:25:34 by tordner          ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -35,7 +35,9 @@ SRCS = 	$(SRCDIR)/main/main.c \
 		$(SRCDIR)/tokens/check_redirections.c \
 		$(SRCDIR)/tokens/token_list.c \
 		$(SRCDIR)/builtins/echo.c \
+		$(SRCDIR)/builtins/echo_utils.c \
 		$(SRCDIR)/builtins/cd.c \
+		$(SRCDIR)/builtins/cd_utils.c \
 		$(SRCDIR)/builtins/pwd.c \
 		$(SRCDIR)/builtins/env.c \
 		$(SRCDIR)/builtins/export.c \
@@ -48,6 +50,7 @@ SRCS = 	$(SRCDIR)/main/main.c \
 		$(SRCDIR)/tokens/tokens_list2.c \
 		$(SRCDIR)/tokens/tokens_utils2.c \
 		$(SRCDIR)/builtins/export_utils.c \
+		$(SRCDIR)/builtins/export_utils2.c \
 		$(SRCDIR)/builtins/exit.c
 	
 OBJS = $(SRCS:$(SRCDIR)/%.c=$(OBJDIR)/%.o)
