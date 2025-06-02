@@ -6,7 +6,7 @@
 /*   By: tordner <tordner@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/05 15:00:11 by thorgal           #+#    #+#             */
-/*   Updated: 2025/06/03 00:21:45 by tordner          ###   ########.fr       */
+/*   Updated: 2025/06/03 00:58:36 by tordner          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -55,6 +55,14 @@ typedef enum e_token_type
 ////////////////////////////////////////////////////////////////
 ////////////////////////////DATA////////////////////////////////
 ////////////////////////////////////////////////////////////////
+typedef struct s_escape_handler
+{
+	char	*input;
+	char	*content;
+	int		i;
+	int		j;
+}	t_escape_handler;
+
 typedef struct s_redirection
 {
 	int						type;
@@ -256,8 +264,8 @@ int				extract_quoted_token(char *input, int *index, char quote_char);
 int				is_delimiter(char c);
 int				is_special(char c);
 void			skip_delimiters(char *str, int *i);
-char			*extract_quoted_content(char *input, int start, int
-len, char quote_char);
+char			*extract_quoted_content(char *input, int start, \
+	int len, char quote_char);
 
 ///////////////////////////
 ///////token_utils2.c//////

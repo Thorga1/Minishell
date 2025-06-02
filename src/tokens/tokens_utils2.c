@@ -6,44 +6,21 @@
 /*   By: tordner <tordner@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/23 03:25:24 by lfirmin           #+#    #+#             */
-/*   Updated: 2025/06/03 00:20:43 by tordner          ###   ########.fr       */
+/*   Updated: 2025/06/03 00:34:07 by tordner          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
-int	extract_token_len(char *input, int *index, int *start)
+static char	*extract_simple_token(char *input, int start, int token_len)
 {
-	int		token_len;
-	char	quote;
+	char	*token;
 
-	while (input[*index] && (input[*index] == ' ' || input[*index] == '\t'))
-		(*index)++;
-	*start = *index;
-	if (input[*index] == '\'' || input[*index] == '\"')
-		token_len = handle_quoted_token(input, index, start);
-	else if (is_special(input[*index]))
-		token_len = handle_special_token(input, index);
-	else
-	{
-		while (input[*index] && !is_delimiter(input[*index]) \
-		&& !is_special(input[*index]))
-		{
-			if (input[*index] == '\'' || input[*index] == '\"')
-			{
-				quote = input[*index];
-				(*index)++;
-				while (input[*index] && input[*index] != quote)
-					(*index)++;
-				if (input[*index] == quote)
-					(*index)++;
-			}
-			else
-				(*index)++;
-		}
-		token_len = *index - *start;
-	}
-	return (token_len);
+	token = malloc(sizeof(char) * (token_len + 1));
+	if (!token)
+		return (NULL);
+	ft_strlcpy(token, input + start, token_len + 1);
+	return (token);
 }
 
 char	*extract_token(char *input, int *index, t_shell *shell)
@@ -70,12 +47,7 @@ char	*extract_token(char *input, int *index, t_shell *shell)
 		token = extract_quoted_content(input, start, token_len, quote_char);
 	}
 	else
-	{
-		token = malloc(sizeof(char) * (token_len + 1));
-		if (!token)
-			return (NULL);
-		ft_strlcpy(token, input + start, token_len + 1);
-	}
+		token = extract_simple_token(input, start, token_len);
 	return (token);
 }
 

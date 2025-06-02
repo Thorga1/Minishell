@@ -6,7 +6,7 @@
 /*   By: tordner <tordner@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/10 17:47:48 by thorgal           #+#    #+#             */
-/*   Updated: 2025/06/02 01:15:26 by tordner          ###   ########.fr       */
+/*   Updated: 2025/06/03 00:40:59 by tordner          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -59,61 +59,6 @@ int	is_delimiter(char c)
 int	is_special(char c)
 {
 	return (c == '|' || c == '<' || c == '>');
-}
-
-char	*extract_quoted_content(char *input, int start, int
-len, char quote_char)
-{
-	char	*content;
-	int		i;
-	int		j;
-
-	content = malloc(sizeof(char) * (len + 1));
-	if (!content)
-		return (NULL);
-	i = start;
-	j = 0;
-	while (i < start + len)
-	{
-		if (input[i] == '\\' && i + 1 < start + len)
-		{
-			if (quote_char == '"')
-			{
-				if (input[i + 1] == '"' || input[i + 1] == '\\' || \
-					input[i + 1] == '$' || input[i + 1] == '`' || \
-					input[i + 1] == '\n')
-				{
-					content[j++] = input[i + 1];
-					i += 2;
-				}
-				else
-				{
-					content[j++] = input[i];
-					i++;
-				}
-			}
-			else if (quote_char == '\'')
-			{
-				if (input[i + 1] == '\'')
-				{
-					content[j++] = '\'';
-					i += 2;
-				}
-				else
-				{
-					content[j++] = input[i];
-					i++;
-				}
-			}
-		}
-		else
-		{
-			content[j++] = input[i];
-			i++;
-		}
-	}
-	content[j] = '\0';
-	return (content);
 }
 
 void	skip_delimiters(char *str, int *i)
