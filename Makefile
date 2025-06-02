@@ -6,7 +6,7 @@
 #    By: tordner <tordner@student.42.fr>            +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2025/01/29 17:32:15 by thorgal           #+#    #+#              #
-#    Updated: 2025/06/02 01:08:18 by tordner          ###   ########.fr        #
+#    Updated: 2025/06/03 00:18:53 by tordner          ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -28,6 +28,7 @@ SRCS = 	$(SRCDIR)/main/main.c \
 		$(SRCDIR)/main/signals_utils.c \
 		$(SRCDIR)/utils/utils.c \
 		$(SRCDIR)/utils/free.c \
+		$(SRCDIR)/utils/get_env_value.c \
 		$(SRCDIR)/main/input.c \
 		$(SRCDIR)/tokens/tokens.c \
 		$(SRCDIR)/tokens/tokens_utils.c \
@@ -49,6 +50,7 @@ SRCS = 	$(SRCDIR)/main/main.c \
 		$(SRCDIR)/exec/pipe.c \
 		$(SRCDIR)/tokens/tokens_list2.c \
 		$(SRCDIR)/tokens/tokens_utils2.c \
+		$(SRCDIR)/tokens/tokenize_command.c \
 		$(SRCDIR)/builtins/export_utils.c \
 		$(SRCDIR)/builtins/export_utils2.c \
 		$(SRCDIR)/builtins/exit.c	\

@@ -6,7 +6,7 @@
 /*   By: tordner <tordner@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/23 03:25:24 by lfirmin           #+#    #+#             */
-/*   Updated: 2025/06/02 23:42:42 by tordner          ###   ########.fr       */
+/*   Updated: 2025/06/03 00:20:43 by tordner          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -104,40 +104,6 @@ int	check_quotes(char *input)
 	if (in_squote || in_dquote)
 		return (1);
 	return (0);
-}
-
-char	**tokenize_command(char *input, t_shell *shell)
-{
-	char	**tokens;
-	int		count;
-	int		i;
-	int		index;
-	char	*expanded;
-
-	count = count_tokens(input);
-	tokens = malloc(sizeof(char *) * (count + 1));
-	if (!tokens)
-		return (NULL);
-	i = 0;
-	index = 0;
-	while (i < count)
-	{
-		tokens[i] = extract_token(input, &index, shell);
-		if (!tokens[i])
-			return (free_tokens(tokens, i));
-		if (shell->single_quoted_token != 1)
-		{
-			expanded = expand_variables(tokens[i], shell);
-			free(tokens[i]);
-			tokens[i] = expanded;
-			shell->single_quoted_token = -1;
-		}
-		i++;
-	}
-	tokens[i] = NULL;
-	if (check_quotes(input) == 1)
-		return (free_tokens(tokens, i));
-	return (tokens);
 }
 
 void	handle_word_count(char *str, int *i)
