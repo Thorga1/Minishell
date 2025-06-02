@@ -6,7 +6,7 @@
 /*   By: tordner <tordner@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/05 15:00:11 by thorgal           #+#    #+#             */
-/*   Updated: 2025/06/02 01:07:20 by tordner          ###   ########.fr       */
+/*   Updated: 2025/06/02 21:24:27 by tordner          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -118,7 +118,6 @@ void			set_status_if_signal(t_shell *shell);
 void			set_signal_child(void);
 void			set_signal_parent_exec(void);
 void			set_signal_parent(void);
-
 
 /////////////////////////////////////////////////////////////////
 ////////////////////////////UTILS////////////////////////////////
@@ -288,13 +287,12 @@ char			*execute_ve_2(t_cmd *cmd, char	*path_env, char	*full_path);
 int				ft_exit(t_cmd *cmd, t_shell *shell);
 int				setup_pipe(int pipefd[2]);
 
-
 // expand.c
 
 char			*expand_variables(char *str, t_shell *shell);
 char			*get_env_value(char *var, t_shell *shell);
-void			handle_child(t_cmd *cmd, int infile, int pipefd[2], t_shell *shell);
+void			handle_child(t_cmd *cmd, int infile, int pipefd[2], \
+	t_shell *shell);
 int				wait_for_children(pid_t last_pid);
-
 
 #endif
