@@ -6,7 +6,7 @@
 /*   By: tordner <tordner@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/23 03:25:24 by lfirmin           #+#    #+#             */
-/*   Updated: 2025/06/02 01:18:19 by tordner          ###   ########.fr       */
+/*   Updated: 2025/06/02 21:33:48 by tordner          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -46,35 +46,61 @@ int	extract_token_len(char *input, int *index, int *start)
 	return (token_len);
 }
 
+char	*ft_strjoin_free(char *s1, char *s2)
+{
+	char	*res;
+
+	res = ft_strjoin(s1, s2);
+	free(s1);
+	free(s2);
+	return (res);
+}
+
 char	*extract_token(char *input, int *index, t_shell *shell)
 {
-	char	*token;
-	int		start;
-	int		token_len;
-	int		temp_index;
-	char	quote_char;
+	char		*token;
+	char		*segment;
+	int			start;
+	int			token_len;
+	char		quote_char;
 
 	shell->single_quoted_token = -1;
-	temp_index = *index;
-	while (input[temp_index] && (input[temp_index] == ' ' \
-		|| input[temp_index] == '\t'))
-		temp_index++;
-	token_len = extract_token_len(input, index, &start);
-	if (token_len == -1)
+	while (input[*index] == ' ' || input[*index] == '\t')
+		(*index)++;
+	token = ft_calloc(1, 1);
+	if (!token)
 		return (NULL);
-	if (input[temp_index] == '\'' || input[temp_index] == '\"')
+	while (input[*index] && !is_delimiter(input[*index]) \
+	&& !is_special(input[*index]))
 	{
-		if (input[temp_index] == '\'')
-			shell->single_quoted_token = 1;
-		quote_char = input[temp_index];
-		token = extract_quoted_content(input, start, token_len, quote_char);
-	}
-	else
-	{
-		token = malloc(sizeof(char) * (token_len + 1));
-		if (!token)
-			return (NULL);
-		ft_strlcpy(token, input + start, token_len + 1);
+		if (input[*index] == '\'' || input[*index] == '"')
+		{
+			quote_char = input[*index];
+			start = ++(*index);
+			while (input[*index] && input[*index] != quote_char)
+				(*index)++;
+			token_len = *index - start;
+			segment = extract_quoted_content(input, start, token_len, \
+				quote_char);
+			if (!segment)
+				return (free(token), NULL);
+			if (quote_char == '\'')
+				shell->single_quoted_token = 1;
+			token = ft_strjoin_free(token, segment);
+		}
+		else
+		{
+			start = *index;
+			while (input[*index] && !is_delimiter(input[*index]) \
+			&& !is_special(input[*index]) \
+			&& input[*index] != '\'' && input[*index] != '"')
+				(*index)++;
+			token_len = *index - start;
+			segment = ft_substr(input, start, token_len);
+			if (!segment)
+				return (free(token), NULL);
+			token = ft_strjoin_free(token, segment);
+		}
 	}
 	return (token);
 }
