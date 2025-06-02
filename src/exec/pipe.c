@@ -52,12 +52,15 @@ int	spawn_pipeline(t_cmd *cmd, t_shell *shell)
 	int		exit_status;
 
 	shell->child_running = 1;
+	shell->signaled = 0;
+	set_signal_parent_exec();
 	infile = STDIN_FILENO;
 	while (cmd)
 	{
 		if (run_child_pipe(cmd, shell, &infile) != 0)
 		{
 			shell->child_running = 0;
+			set_signal_parent();
 			return (1);
 		}
 		cmd = cmd->next;
@@ -65,6 +68,9 @@ int	spawn_pipeline(t_cmd *cmd, t_shell *shell)
 	exit_status = 0;
 	exit_status = wait_for_children(-1);
 	shell->child_running = 0;
+	if (g_signal)
+		shell->signaled = 1;
+	set_signal_parent();
 	return (exit_status);
 }
 
@@ -88,6 +94,7 @@ int	execute_pipeline(t_cmd *cmd_list, t_shell *shell)
 		{
 			saved_stdin = dup(STDIN_FILENO);
 			saved_stdout = dup(STDOUT_FILENO);
+			shell->signaled = 0;
 			redir_status = loop_open_files(cmd_list);
 			if (redir_status != 0)
 			{
@@ -96,6 +103,11 @@ int	execute_pipeline(t_cmd *cmd_list, t_shell *shell)
 			}
 			shell->exit_status = execute_builtin(cmd_list, shell);
 			restore_fds(saved_stdin, saved_stdout);
+			if (g_signal)
+			{
+				shell->signaled = 1;
+				shell->exit_status = g_signal;
+			}
 			return (shell->exit_status);
 		}
 		return (shell->exit_status = execute_builtin(cmd_list, shell));

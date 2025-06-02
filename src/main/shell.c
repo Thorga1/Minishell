@@ -89,8 +89,11 @@ void	minishell_loop(t_shell *shell)
 			printf("exit\n");
 			break ;
 		}
-		if (g_signal)
-			set_status_if_signal(shell);
+		if (g_signal && !shell->child_running)
+		{
+			shell->exit_status = g_signal;
+			g_signal = 0;
+		}
 		handle_input(input, shell);
 		free(input);
 		check_if_signal(shell);

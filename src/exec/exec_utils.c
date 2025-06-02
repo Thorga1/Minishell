@@ -47,12 +47,18 @@ int	wait_for_children(pid_t last_pid)
 	pid = wait(&status);
 	while (pid > 0)
 	{
-		if (pid == last_pid)
+		if (WIFEXITED(status))
 		{
-			if (WIFEXITED(status))
+			if (pid == last_pid || last_pid == -1)
 				exit_status = WEXITSTATUS(status);
-			else if (WIFSIGNALED(status))
-				exit_status = 128 + WTERMSIG(status);
+		}
+		else if (WIFSIGNALED(status))
+		{
+			exit_status = 128 + WTERMSIG(status);
+			if (WTERMSIG(status) == SIGINT)
+				g_signal = 128 + SIGINT;
+			else if (WTERMSIG(status) == SIGQUIT)
+				g_signal = 128 + SIGQUIT;
 		}
 		pid = wait(&status);
 	}
@@ -61,6 +67,7 @@ int	wait_for_children(pid_t last_pid)
 
 void	handle_child(t_cmd *cmd, int infile, int pipefd[2], t_shell *shell)
 {
+	set_signal_child();
 	if (cmd->redir && setup_input_redirections(cmd->redir) != 0)
 		exit(1);
 	if (!has_input_redirection(cmd->redir))
