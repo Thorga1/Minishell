@@ -162,6 +162,9 @@ int				handle_previous_directory(t_shell *shell);
 int				update_pwd_env(t_shell *shell);
 char			*resolve_env_variables(char *path, t_shell *shell);
 char			*expand_tilde(char *path, t_shell *shell);
+int				validate_cd_args(t_cmd *cmd, t_shell *shell);
+char			*resolve_cd_path(char *path, t_shell *shell);
+int				execute_cd_change(char *resolved_path);
 int				ft_cd(t_cmd *cmd, t_shell *shell);
 
 //////////////////
@@ -196,6 +199,13 @@ int				ft_echo(t_cmd *cmd, t_shell *shell);
 /////////////////////////
 int				handle_env_var(t_shell *shell, char *arg);
 char			*handle_quotes_in_env_var(char *arg);
+char	*process_single_var(char *result, char *var_start, char *var_end,
+	char **env);
+char	*expand_env_variables(char *str, char **env);
+
+void	handle_quote_char(char *var_value, int *i, int *in_quotes,
+	char *quote_type);
+char	*process_quotes(char *var_value, char *clean_value);
 
 /////////////////////////
 ///////export_utils2.c////
@@ -294,7 +304,9 @@ int				execute_pipeline(t_cmd *cmd_list, t_shell *shell);
 char			*execute_ve_2(t_cmd *cmd, char	*path_env, char	*full_path);
 int				ft_exit(t_cmd *cmd, t_shell *shell);
 int				setup_pipe(int pipefd[2]);
-
+int				is_valid_number(char *str);
+int				check_positive_overflow(long long result, char digit);
+int				check_negative_overflow(long long result, char digit);
 // expand.c
 
 char			*expand_variables(char *str, t_shell *shell);
@@ -302,5 +314,11 @@ char			*get_env_value(char *var, t_shell *shell);
 void			handle_child(t_cmd *cmd, int infile, int pipefd[2], \
 	t_shell *shell);
 int				wait_for_children(pid_t last_pid);
+
+
+// pipe.c
+
+void			restore_fds(int saved_stdin, int saved_stdout);
+int				spawn_pipeline(t_cmd *cmd, t_shell *shell);
 
 #endif

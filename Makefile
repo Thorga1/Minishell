@@ -27,6 +27,8 @@ SRCS = 	$(SRCDIR)/main/main.c \
 		$(SRCDIR)/main/signals.c \
 		$(SRCDIR)/main/signals_utils.c \
 		$(SRCDIR)/utils/utils.c \
+		$(SRCDIR)/main/prompt.c \
+		$(SRCDIR)/exec/execute_pipeline.c \
 		$(SRCDIR)/utils/free.c \
 		$(SRCDIR)/utils/get_env_value.c \
 		$(SRCDIR)/main/input.c \
@@ -58,7 +60,9 @@ SRCS = 	$(SRCDIR)/main/main.c \
 		$(SRCDIR)/builtins/export_utils2.c \
 		$(SRCDIR)/builtins/exit.c	\
 		$(SRCDIR)/exec/exec_utils.c	\
-		$(SRCDIR)/tokens/expander.c
+		$(SRCDIR)/tokens/expander.c \
+		$(SRCDIR)/builtins/exit_utils.c \
+		$(SRCDIR)/builtins/export_utils_3.c
 	
 OBJS = $(SRCS:$(SRCDIR)/%.c=$(OBJDIR)/%.o)
 
