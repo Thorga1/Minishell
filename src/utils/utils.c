@@ -68,3 +68,29 @@ char	**copy_env(char **envp)
 	env[i] = NULL;
 	return (env);
 }
+
+char	**add_env_var(char **env, char *new_var)
+{
+	char	**new_env;
+	int		i;
+	int		count;
+
+	count = 0;
+	while (env[count])
+		count++;
+	new_env = malloc(sizeof(char *) * (count + 2));
+	if (!new_env)
+		return (NULL);
+	i = 0;
+	while (i < count)
+	{
+		new_env[i] = env[i];
+		i++;
+	}
+	new_env[i] = ft_strdup(new_var);
+	if (!new_env[i])
+		return (free(new_env), NULL);
+	new_env[i + 1] = NULL;
+	free(env);
+	return (new_env);
+}
