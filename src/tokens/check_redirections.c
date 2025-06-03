@@ -6,7 +6,7 @@
 /*   By: tordner <tordner@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/06 17:17:19 by tordner           #+#    #+#             */
-/*   Updated: 2025/06/02 01:12:29 by tordner          ###   ########.fr       */
+/*   Updated: 2025/06/03 02:50:31 by tordner          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -38,15 +38,13 @@ int	check_further_redirections(char **tokens, int i)
 	return (0);
 }
 
-int	validate_redirections(char **tokens)
+static int	has_valid_command(char **tokens)
 {
-	int	i;
-	int	has_command;
 	int	j;
+	int	has_command;
 
-	i = 0;
-	has_command = 0;
 	j = 0;
+	has_command = 0;
 	while (tokens[j])
 	{
 		if (classify_token(tokens[j]) == TOKEN_WORD)
@@ -59,8 +57,18 @@ int	validate_redirections(char **tokens)
 	if (!has_command)
 	{
 		write(STDERR_FILENO, "Syntax error: No command found\n", 32);
-		return (2);
+		return (0);
 	}
+	return (1);
+}
+
+int	validate_redirections(char **tokens)
+{
+	int	i;
+
+	if (!has_valid_command(tokens))
+		return (2);
+	i = 0;
 	while (tokens[i])
 	{
 		if (check_further_redirections(tokens, i))
@@ -68,4 +76,17 @@ int	validate_redirections(char **tokens)
 		i++;
 	}
 	return (0);
+}
+
+int	validate_pipes(char **tokens)
+{
+	int	end;
+
+	end = 0;
+	while (tokens[end + 1] != NULL)
+		end++;
+	if (classify_token(tokens[0]) == TOKEN_PIPE
+		|| classify_token(tokens[end]) == TOKEN_PIPE)
+		return (1);
+	return (pipe_sequence_invalid(tokens));
 }

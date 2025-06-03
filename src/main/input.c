@@ -6,7 +6,7 @@
 /*   By: tordner <tordner@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/30 17:17:15 by lfirmin           #+#    #+#             */
-/*   Updated: 2025/06/02 23:56:18 by tordner          ###   ########.fr       */
+/*   Updated: 2025/06/03 03:01:46 by tordner          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,7 +23,7 @@ void	print_redirections(t_redirection *redir)
 
 void	print_cmd_list(t_cmd *cmd_list)
 {
-	int i;
+	int	i;
 
 	while (cmd_list)
 	{

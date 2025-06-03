@@ -6,7 +6,7 @@
 /*   By: tordner <tordner@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/06 16:55:42 by tordner           #+#    #+#             */
-/*   Updated: 2025/06/02 01:09:51 by tordner          ###   ########.fr       */
+/*   Updated: 2025/06/03 02:50:07 by tordner          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,11 +32,9 @@ int	check_before_pipe(char **tokens)
 	return (0);
 }
 
-int	pipe_sequence_invalid(char **tokens)
+static int	has_consecutive_pipes(char **tokens)
 {
 	int	i;
-	int	j;
-	int	has_command;
 
 	i = 0;
 	while (tokens[i])
@@ -46,26 +44,39 @@ int	pipe_sequence_invalid(char **tokens)
 			return (1);
 		i++;
 	}
-	if (check_before_pipe(tokens))
-		return (1);
+	return (0);
+}
+
+static int	has_valid_command_after_pipe(char **tokens, int pipe_pos)
+{
+	int	j;
+	int	has_command;
+
+	j = pipe_pos + 1;
+	has_command = 0;
+	while (tokens[j] && classify_token(tokens[j]) != TOKEN_PIPE)
+	{
+		if (classify_token(tokens[j]) == TOKEN_WORD)
+		{
+			if (j == pipe_pos + 1 \
+				|| classify_token(tokens[j - 1]) == TOKEN_WORD)
+				has_command = 1;
+		}
+		j++;
+	}
+	return (has_command);
+}
+
+static int	check_pipe_commands(char **tokens)
+{
+	int	i;
+
 	i = 0;
 	while (tokens[i])
 	{
 		if (classify_token(tokens[i]) == TOKEN_PIPE && tokens[i + 1])
 		{
-			j = i + 1;
-			has_command = 0;
-			while (tokens[j] && classify_token(tokens[j]) != TOKEN_PIPE)
-			{
-				if (classify_token(tokens[j]) == TOKEN_WORD)
-				{
-					if (j == i + 1 \
-						|| classify_token(tokens[j - 1]) == TOKEN_WORD)
-						has_command = 1;
-				}
-				j++;
-			}
-			if (!has_command)
+			if (!has_valid_command_after_pipe(tokens, i))
 				return (1);
 		}
 		i++;
@@ -73,15 +84,15 @@ int	pipe_sequence_invalid(char **tokens)
 	return (0);
 }
 
-int	validate_pipes(char **tokens)
+int	pipe_sequence_invalid(char **tokens)
 {
-	int	end;
-
-	end = 0;
-	while (tokens[end + 1] != NULL)
-		end++;
-	if (classify_token(tokens[0]) == TOKEN_PIPE
-		|| classify_token(tokens[end]) == TOKEN_PIPE)
+	if (!tokens)
 		return (1);
-	return (pipe_sequence_invalid(tokens));
+	if (has_consecutive_pipes(tokens))
+		return (1);
+	if (check_before_pipe(tokens))
+		return (1);
+	if (check_pipe_commands(tokens))
+		return (1);
+	return (0);
 }
