@@ -3,7 +3,7 @@
 #                                                         :::      ::::::::    #
 #    Makefile                                           :+:      :+:    :+:    #
 #                                                     +:+ +:+         +:+      #
-#    By: tordner <tordner@student.42.fr>            +#+  +:+       +#+         #
+#    By: lfirmin <lfirmin@student.42.fr>            +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2025/01/29 17:32:15 by thorgal           #+#    #+#              #
 #    Updated: 2025/06/03 00:39:56 by tordner          ###   ########.fr        #
@@ -68,11 +68,47 @@ OBJS = $(SRCS:$(SRCDIR)/%.c=$(OBJDIR)/%.o)
 
 OBJSUBDIRS = $(sort $(dir $(OBJS)))
 
-all: $(NAME)
+GREEN = \033[0;32m
+YELLOW = \033[0;33m
+CYAN = \033[0;36m
+RESET = \033[0m
+BOLD = \033[1m
+WHITE = \033[0;97m
+BLUE = \033[0;34m
+
+LOADING_CHARS = ⠋ ⠙ ⠹ ⠸ ⠼ ⠴ ⠦ ⠧ ⠇ ⠏
+
+define MINISHELL_ART
+
+ ███▄ ▄███▓ ██▓ ███▄    █  ██▓  ██████  ██░ ██ ▓█████  ██▓     ██▓    
+▓██▒▀█▀ ██▒▓██▒ ██ ▀█   █ ▓██▒▒██    ▒ ▓██░ ██▒▓█   ▀ ▓██▒    ▓██▒    
+▓██    ▓██░▒██▒▓██  ▀█ ██▒▒██▒░ ▓██▄   ▒██▀▀██░▒███   ▒██░    ▒██░    
+▒██    ▒██ ░██░▓██▒  ▐▌██▒░██░  ▒   ██▒░▓█ ░██ ▒▓█  ▄ ▒██░    ▒██░    
+▒██▒   ░██▒░██░▒██░   ▓██░░██░▒██████▒▒░▓█▒░██▓░▒████▒░██████▒░██████▒
+░ ▒░   ░  ░░▓  ░ ▒░   ▒ ▒ ░▓  ▒ ▒▓▒ ▒ ░ ▒ ░░▒░▒░░ ▒░ ░░ ▒░▓  ░░ ▒░▓  ░
+░  ░      ░ ▒ ░░ ░░   ░ ▒░ ▒ ░░ ░▒  ░ ░ ▒ ░▒░ ░ ░ ░  ░░ ░ ▒  ░░ ░ ▒  ░
+░      ░    ▒ ░   ░   ░ ░  ▒ ░░  ░  ░   ░  ░░ ░   ░     ░ ░     ░ ░   
+       ░    ░           ░  ░        ░   ░  ░  ░   ░  ░    ░  ░    ░  ░
+
+endef
+export MINISHELL_ART
+
+all: print_art $(NAME)
+
+print_art:
+	@printf "$(CYAN)%s$(RESET)\n" "$$MINISHELL_ART"
 
 $(NAME): $(OBJS)
 	@$(MAKE) -s -C libft
+	@printf "$(BOLD)$(WHITE)Welcome to the $(BLUE)Minishell$(WHITE) compilation process.\nPlease hold on as we prepare your program.\n\n$(RESET)"
+	@printf "$(YELLOW)Compiling Minishell, Please wait...$(RESET)"
+	@for char in $(LOADING_CHARS); do \
+		printf "\r$(YELLOW)Compiling Minishell, Please wait... $$char$(RESET)"; \
+		sleep 0.1; \
+	done
 	@$(CC) $(CFLAGS) $(OBJS) -o $(NAME) -g3 -lreadline libft/$(LIBFT)
+	@printf "\r$(GREEN)Nice ! $(WHITE)Minishell compiled successfully !     $(RESET)\n\n"
+	@printf "$(BOLD)$(WHITE)Compilation complete !\n$(BLUE)Minishell$(WHITE) is ready to use !\n$(RESET)"
 
 # Règle pour créer les fichiers objets
 $(OBJDIR)/%.o: $(SRCDIR)/%.c | $(OBJSUBDIRS)
@@ -85,6 +121,7 @@ $(OBJSUBDIRS):
 clean:
 	@make clean -s -C libft
 	@rm -rf $(OBJDIR)
+	@printf "$(WHITE)Clean process completed for $(BLUE)Minishell.$(RESET)\n"
 
 clean1:
 	@rm -rf $(OBJDIR)
@@ -92,7 +129,11 @@ clean1:
 fclean: clean1
 	@make fclean -s -C libft
 	@rm -f $(NAME)
+	@printf "$(WHITE)Full clean process completed for $(BLUE)Minishell.$(RESET)\n"
 
 re: fclean all
 
-.PHONY: all clean fclean re clean1
+.PHONY: all clean fclean re clean1 print_art
+
+norminette:
+	norminette src/* includes/* | grep "Error"
