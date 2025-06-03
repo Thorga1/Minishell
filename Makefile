@@ -3,10 +3,10 @@
 #                                                         :::      ::::::::    #
 #    Makefile                                           :+:      :+:    :+:    #
 #                                                     +:+ +:+         +:+      #
-#    By: lfirmin <lfirmin@student.42.fr>            +#+  +:+       +#+         #
+#    By: tordner <tordner@student.42.fr>            +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2025/01/29 17:32:15 by thorgal           #+#    #+#              #
-#    Updated: 2025/06/03 00:39:56 by tordner          ###   ########.fr        #
+#    Updated: 2025/06/03 04:09:04 by tordner          ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -60,6 +60,10 @@ SRCS = 	$(SRCDIR)/main/main.c \
 		$(SRCDIR)/builtins/export_utils2.c \
 		$(SRCDIR)/builtins/exit.c	\
 		$(SRCDIR)/exec/exec_utils.c	\
+		$(SRCDIR)/exec/setup_files.c	\
+		$(SRCDIR)/exec/execute_ve.c	\
+		$(SRCDIR)/exec/ft_exec.c	\
+		$(SRCDIR)/exec/setup_output_redirections.c	\
 		$(SRCDIR)/tokens/expander.c \
 		$(SRCDIR)/builtins/exit_utils.c \
 		$(SRCDIR)/builtins/export_utils_3.c

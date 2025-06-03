@@ -6,7 +6,7 @@
 /*   By: tordner <tordner@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/05 15:00:11 by thorgal           #+#    #+#             */
-/*   Updated: 2025/06/03 00:58:36 by tordner          ###   ########.fr       */
+/*   Updated: 2025/06/03 04:11:40 by tordner          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -199,13 +199,13 @@ int				ft_echo(t_cmd *cmd, t_shell *shell);
 /////////////////////////
 int				handle_env_var(t_shell *shell, char *arg);
 char			*handle_quotes_in_env_var(char *arg);
-char	*process_single_var(char *result, char *var_start, char *var_end,
-	char **env);
-char	*expand_env_variables(char *str, char **env);
+char			*process_single_var(char *result, \
+	char *var_start, char *var_end, char **env);
+char			*expand_env_variables(char *str, char **env);
 
-void	handle_quote_char(char *var_value, int *i, int *in_quotes,
-	char *quote_type);
-char	*process_quotes(char *var_value, char *clean_value);
+void			handle_quote_char(char *var_value, \
+	int *i, int *in_quotes, char *quote_type);
+char			*process_quotes(char *var_value, char *clean_value);
 
 /////////////////////////
 ///////export_utils2.c////
@@ -315,10 +315,21 @@ void			handle_child(t_cmd *cmd, int infile, int pipefd[2], \
 	t_shell *shell);
 int				wait_for_children(pid_t last_pid);
 
-
 // pipe.c
 
 void			restore_fds(int saved_stdin, int saved_stdout);
 int				spawn_pipeline(t_cmd *cmd, t_shell *shell);
+
+// setup_files.c
+
+int				setup_files(t_redirection *redir);
+
+// setup_output_redirections.c
+int				setup_output_redirections(t_redirection *redir);
+
+// execute_ve.c
+int				execute_ve(t_cmd *cmd, char **envp);
+int				file_exists(const char *path);
+void			run_child_process(t_cmd *cmd, char **envp);
 
 #endif

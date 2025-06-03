@@ -6,30 +6,34 @@
 /*   By: tordner <tordner@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/23 01:17:12 by lfirmin           #+#    #+#             */
-/*   Updated: 2025/06/02 00:46:04 by tordner          ###   ########.fr       */
+/*   Updated: 2025/06/03 03:37:59 by tordner          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../../includes/minishell.h"
 
-int	handle_heredoc(char *delim)
+static int	create_heredoc_pipe(int pipefd[2])
 {
-	int		pipefd[2];
-	char	*line;
-
-	if (!delim)
-		return (1);
 	if (pipe(pipefd) == -1)
 	{
-		perror("pipe");
+		perror("minishell: pipe");
 		return (1);
 	}
+	return (0);
+}
+
+static void	process_heredoc_input(int pipefd[2], char *delim)
+{
+	char	*line;
+
 	while (1)
 	{
 		line = readline("> ");
 		if (!line)
 		{
-			write(2, "warning: here-document delimited by end-of-file\n", 48);
+			ft_putstr_fd(\
+				"minishell: warning: here-document delimited "
+				"by end-of-file\n", 2);
 			break ;
 		}
 		if (ft_strcmp(line, delim) == 0)
@@ -41,8 +45,23 @@ int	handle_heredoc(char *delim)
 		write(pipefd[1], "\n", 1);
 		free(line);
 	}
+}
+
+int	handle_heredoc(char *delim)
+{
+	int	pipefd[2];
+
+	if (!delim)
+		return (1);
+	if (create_heredoc_pipe(pipefd))
+		return (1);
+	process_heredoc_input(pipefd, delim);
 	close(pipefd[1]);
-	dup2(pipefd[0], STDIN_FILENO);
+	if (dup2(pipefd[0], STDIN_FILENO) == -1)
+	{
+		close(pipefd[0]);
+		return (1);
+	}
 	close(pipefd[0]);
 	return (0);
 }
