@@ -12,57 +12,6 @@
 
 #include "minishell.h"
 
-int	is_valid_identifier(char *str)
-{
-	int	i;
-
-	if (!str || !*str)
-		return (0);
-	if (str[0] == '-')
-		return (-1);
-	if (!((str[0] >= 'a' && str[0] <= 'z')
-			|| (str[0] >= 'A' && str[0] <= 'Z')
-			|| str[0] == '_'))
-		return (0);
-	i = 1;
-	while (str[i] && str[i] != '=')
-	{
-		if (!((str[i] >= 'a' && str[i] <= 'z')
-				|| (str[i] >= 'A' && str[i] <= 'Z')
-				|| (str[i] >= '0' && str[i] <= '9')
-				|| str[i] == '_'))
-			return (0);
-		i++;
-	}
-	return (1);
-}
-
-char	**add_env_var(char **env, char *new_var)
-{
-	char	**new_env;
-	int		i;
-	int		count;
-
-	count = 0;
-	while (env[count])
-		count++;
-	new_env = malloc(sizeof(char *) * (count + 2));
-	if (!new_env)
-		return (NULL);
-	i = 0;
-	while (i < count)
-	{
-		new_env[i] = env[i];
-		i++;
-	}
-	new_env[i] = ft_strdup(new_var);
-	if (!new_env[i])
-		return (free(new_env), NULL);
-	new_env[i + 1] = NULL;
-	free(env);
-	return (new_env);
-}
-
 int	update_env_var(char **env, char *var)
 {
 	int		i;
@@ -90,40 +39,67 @@ int	update_env_var(char **env, char *var)
 	return (0);
 }
 
+int	handle_export_validation(char *arg)
+{
+	int	validity;
+
+	validity = is_valid_identifier(arg);
+	if (validity <= 0)
+	{
+		ft_putstr_fd("export: '", 2);
+		ft_putstr_fd(arg, 2);
+		if (validity == -1)
+		{
+			ft_putstr_fd("': option invalide\n", 2);
+			return (2);
+		}
+		else
+			ft_putstr_fd("': not a valid identifier\n", 2);
+		return (1);
+	}
+	return (0);
+}
+
+int	process_single_export_arg(t_shell *shell, char *arg)
+{
+	int	validation_result;
+	int	status;
+
+	validation_result = handle_export_validation(arg);
+	if (validation_result > 0)
+	{
+		if (validation_result == 2)
+			return (2);
+		return (1);
+	}
+	if (ft_strchr(arg, '='))
+	{
+		status = handle_env_var(shell, arg);
+		if (status != 0)
+			return (status);
+	}
+	return (0);
+}
+
 int	process_export_args(t_shell *shell, char **args, int i)
 {
 	int	ret;
 	int	status;
 	int	success;
-	int	validity;
 
 	ret = 1;
 	success = 0;
 	while (args[i])
 	{
-		validity = is_valid_identifier(args[i]);
-		if (validity <= 0)
+		status = process_single_export_arg(shell, args[i]);
+		if (status == 2)
+			return (2);
+		if (status == 1)
 		{
-			ft_putstr_fd("export: '", 2);
-			ft_putstr_fd(args[i], 2);
-			if (validity == -1)
-			{
-				ft_putstr_fd("': option invalide\n", 2);
-				return (2);
-			}
-			else
-				ft_putstr_fd("': not a valid identifier\n", 2);
 			i++;
 			continue ;
 		}
-		if (ft_strchr(args[i], '='))
-		{
-			status = handle_env_var(shell, args[i]);
-			if (status != 0)
-				return (status);
-			success = 1;
-		}
-		else
+		if (status == 0)
 			success = 1;
 		i++;
 	}

@@ -43,7 +43,6 @@ int	update_pwd_env(t_shell *shell)
 
 char	*resolve_env_variables(char *path, t_shell *shell)
 {
-	char	*result;
 	char	*env_value;
 	char	*var_name;
 	int		i;
@@ -65,10 +64,7 @@ char	*resolve_env_variables(char *path, t_shell *shell)
 	if (!env_value)
 		return (ft_strdup(""));
 	if (path[i])
-	{
-		result = ft_strjoin(env_value, &path[i]);
-		return (result);
-	}
+		return (ft_strjoin(env_value, &path[i]));
 	return (ft_strdup(env_value));
 }
 
@@ -92,12 +88,8 @@ char	*expand_tilde(char *path, t_shell *shell)
 	return (ft_strdup(path));
 }
 
-int	ft_cd(t_cmd *cmd, t_shell *shell)
+int	validate_cd_args(t_cmd *cmd, t_shell *shell)
 {
-	char	*path;
-	char	*resolved_path;
-	int		status;
-
 	if (!cmd || !cmd->args)
 		return (1);
 	if (!cmd->args[1] || ft_strlen(cmd->args[1]) == 0)
@@ -111,34 +103,25 @@ int	ft_cd(t_cmd *cmd, t_shell *shell)
 		ft_putendl_fd("cd: too many arguments", STDERR_FILENO);
 		return (1);
 	}
+	return (0);
+}
+
+int	ft_cd(t_cmd *cmd, t_shell *shell)
+{
+	char	*path;
+	char	*resolved_path;
+	int		validation_result;
+	int		status;
+
+	validation_result = validate_cd_args(cmd, shell);
+	if (validation_result != 0)
+		return (validation_result);
 	path = cmd->args[1];
-	if (path[0] == '~')
-		resolved_path = expand_tilde(path, shell);
-	else if (path[0] == '$')
-	{
-		resolved_path = resolve_env_variables(path, shell);
-		if (!resolved_path || ft_strlen(resolved_path) == 0)
-		{
-			ft_putstr_fd("cd: ", STDERR_FILENO);
-			ft_putstr_fd(path, STDERR_FILENO);
-			ft_putendl_fd(": No such file or directory", STDERR_FILENO);
-			if (resolved_path)
-				free(resolved_path);
-			return (1);
-		}
-	}
-	else
-		resolved_path = ft_strdup(path);
-	if (chdir(resolved_path) == -1)
-	{
-		ft_putstr_fd("cd: ", STDERR_FILENO);
-		ft_putstr_fd(resolved_path, STDERR_FILENO);
-		ft_putstr_fd(": ", STDERR_FILENO);
-		perror("");
-		free(resolved_path);
+	resolved_path = resolve_cd_path(path, shell);
+	if (!resolved_path)
 		return (1);
-	}
-	free(resolved_path);
+	if (execute_cd_change(resolved_path) != 0)
+		return (1);
 	status = update_pwd_env(shell);
 	return (status);
 }

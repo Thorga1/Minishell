@@ -14,24 +14,27 @@
 #include <limits.h>
 #include <errno.h>
 
-static int	is_valid_number(char *str)
+static long long	parse_digits(char *str, int *i, int sign, int *overflow)
 {
-	int	i;
+	long long	result;
 
-	i = 0;
-	if (!str || !str[0])
-		return (0);
-	if (str[i] == '-' || str[i] == '+')
-		i++;
-	if (!str[i])
-		return (0);
-	while (str[i])
+	result = 0;
+	while (str[*i] >= '0' && str[*i] <= '9')
 	{
-		if (!ft_isdigit(str[i]))
-			return (0);
-		i++;
+		if (sign == 1 && check_positive_overflow(result, str[*i]))
+		{
+			*overflow = 1;
+			return (LLONG_MAX);
+		}
+		if (sign == -1 && check_negative_overflow(result, str[*i]))
+		{
+			*overflow = 1;
+			return (LLONG_MIN);
+		}
+		result = result * 10 + (str[*i] - '0');
+		(*i)++;
 	}
-	return (1);
+	return (result);
 }
 
 static long long	safe_atoll(char *str, int *overflow)
@@ -50,65 +53,56 @@ static long long	safe_atoll(char *str, int *overflow)
 			sign = -1;
 		i++;
 	}
-	while (str[i] >= '0' && str[i] <= '9')
-	{
-		if (sign == 1)
-		{
-			if (result > (LLONG_MAX - (str[i] - '0')) / 10)
-			{
-				*overflow = 1;
-				return (LLONG_MAX);
-			}
-		}
-		else
-		{
-			if (result > (-(LLONG_MIN + (str[i] - '0'))) / 10)
-			{
-				*overflow = 1;
-				return (LLONG_MIN);
-			}
-		}
-		result = result * 10 + (str[i] - '0');
-		i++;
-	}
+	result = parse_digits(str, &i, sign, overflow);
 	return (result * sign);
+}
+
+static void	print_numeric_error(char *arg, t_shell *shell)
+{
+	ft_putstr_fd("minishell: exit: ", 2);
+	ft_putstr_fd(arg, 2);
+	ft_putstr_fd(": numeric argument required\n", 2);
+	shell->exit_status = 2;
+	shell->running = 0;
+}
+
+static int	handle_exit_argument(t_cmd *cmd, t_shell *shell, int *exit_code)
+{
+	long long	num;
+	int			overflow;
+
+	if (!is_valid_number(cmd->args[1]))
+	{
+		print_numeric_error(cmd->args[1], shell);
+		return (2);
+	}
+	num = safe_atoll(cmd->args[1], &overflow);
+	if (overflow)
+	{
+		print_numeric_error(cmd->args[1], shell);
+		return (2);
+	}
+	*exit_code = (unsigned char)(num % 256);
+	if (cmd->args[2])
+	{
+		ft_putstr_fd("minishell: exit: too many arguments\n", 2);
+		return (1);
+	}
+	return (0);
 }
 
 int	ft_exit(t_cmd *cmd, t_shell *shell)
 {
-	int			exit_code;
-	long long	num;
-	int			overflow;
+	int	exit_code;
+	int	result;
 
 	printf("exit\n");
 	exit_code = shell->exit_status;
 	if (cmd->args[1])
 	{
-		if (!is_valid_number(cmd->args[1]))
-		{
-			ft_putstr_fd("minishell: exit: ", 2);
-			ft_putstr_fd(cmd->args[1], 2);
-			ft_putstr_fd(": numeric argument required\n", 2);
-			shell->exit_status = 2;
-			shell->running = 0;
-			return (2);
-		}
-		num = safe_atoll(cmd->args[1], &overflow);
-		if (overflow)
-		{
-			ft_putstr_fd("minishell: exit: ", 2);
-			ft_putstr_fd(cmd->args[1], 2);
-			ft_putstr_fd(": numeric argument required\n", 2);
-			shell->exit_status = 2;
-			shell->running = 0;
-			return (2);
-		}
-		exit_code = (unsigned char)(num % 256);
-		if (cmd->args[2])
-		{
-			ft_putstr_fd("minishell: exit: too many arguments\n", 2);
-			return (1);
-		}
+		result = handle_exit_argument(cmd, shell, &exit_code);
+		if (result != 0)
+			return (result);
 	}
 	shell->exit_status = exit_code;
 	shell->running = 0;

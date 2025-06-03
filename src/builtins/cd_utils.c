@@ -54,3 +54,42 @@ int	handle_previous_directory(t_shell *shell)
 	}
 	return (0);
 }
+
+char	*resolve_cd_path(char *path, t_shell *shell)
+{
+	char	*resolved_path;
+
+	if (path[0] == '~')
+		resolved_path = expand_tilde(path, shell);
+	else if (path[0] == '$')
+	{
+		resolved_path = resolve_env_variables(path, shell);
+		if (!resolved_path || ft_strlen(resolved_path) == 0)
+		{
+			ft_putstr_fd("cd: ", STDERR_FILENO);
+			ft_putstr_fd(path, STDERR_FILENO);
+			ft_putendl_fd(": No such file or directory", STDERR_FILENO);
+			if (resolved_path)
+				free(resolved_path);
+			return (NULL);
+		}
+	}
+	else
+		resolved_path = ft_strdup(path);
+	return (resolved_path);
+}
+
+int	execute_cd_change(char *resolved_path)
+{
+	if (chdir(resolved_path) == -1)
+	{
+		ft_putstr_fd("cd: ", STDERR_FILENO);
+		ft_putstr_fd(resolved_path, STDERR_FILENO);
+		ft_putstr_fd(": ", STDERR_FILENO);
+		perror("");
+		free(resolved_path);
+		return (1);
+	}
+	free(resolved_path);
+	return (0);
+}

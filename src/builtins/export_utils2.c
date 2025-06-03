@@ -12,78 +12,106 @@
 
 #include "minishell.h"
 
-char	*get_env_value_for_expansion(char **env, char *var_name)
+int	is_valid_identifier(char *str)
 {
-	int		i;
-	int		var_len;
-	char	*equal_pos;
+	int	i;
 
-	if (!env || !var_name)
-		return (NULL);
-	var_len = ft_strlen(var_name);
-	i = 0;
-	while (env[i])
+	if (!str || !*str)
+		return (0);
+	if (str[0] == '-')
+		return (-1);
+	if (!((str[0] >= 'a' && str[0] <= 'z')
+			|| (str[0] >= 'A' && str[0] <= 'Z')
+			|| str[0] == '_'))
+		return (0);
+	i = 1;
+	while (str[i] && str[i] != '=')
 	{
-		equal_pos = ft_strchr(env[i], '=');
-		if (equal_pos && (equal_pos - env[i]) == var_len
-			&& ft_strncmp(env[i], var_name, var_len) == 0)
-			return (equal_pos + 1);
+		if (!((str[i] >= 'a' && str[i] <= 'z')
+				|| (str[i] >= 'A' && str[i] <= 'Z')
+				|| (str[i] >= '0' && str[i] <= '9')
+				|| str[i] == '_'))
+			return (0);
 		i++;
 	}
-	return (NULL);
+	return (1);
 }
 
-char	*extract_var_name(char *result, char *var_start, char *var_end)
+char	*process_single_var(char *result, char *var_start, char *var_end,
+	char **env)
 {
-	return (ft_substr(result, var_start - result + 1, var_end - var_start - 1));
+	char	*var_name;
+	char	*var_value;
+	char	*new_result;
+
+	var_name = extract_var_name(result, var_start, var_end);
+	if (!var_name)
+		return (free(result), NULL);
+	var_value = get_env_value_for_expansion(env, var_name);
+	if (!var_value)
+		var_value = "";
+	new_result = build_expanded_string(result, var_start, var_end, var_value);
+	free(var_name);
+	free(result);
+	return (new_result);
 }
 
-char	*build_expanded_string(char *result, char *var_start, char *var_end,
-	char *var_value)
+char	*expand_env_variables(char *str, char **env)
 {
-	char	*before_var;
-	char	*after_var;
-	char	*temp;
-	char	*final_result;
+	char	*result;
+	char	*var_start;
+	char	*var_end;
 
-	before_var = ft_substr(result, 0, var_start - result);
-	after_var = ft_strdup(var_end);
-	if (!before_var || !after_var)
-	{
-		free(before_var);
-		free(after_var);
+	if (!str)
 		return (NULL);
-	}
-	temp = ft_strjoin(before_var, var_value);
-	free(before_var);
-	if (!temp)
-	{
-		free(after_var);
+	result = ft_strdup(str);
+	if (!result)
 		return (NULL);
-	}
-	final_result = ft_strjoin(temp, after_var);
-	free(temp);
-	free(after_var);
-	return (final_result);
-}
-
-char	*find_next_var(char *result, char **var_start, char **var_end)
-{
-	char	*temp;
-
-	*var_start = ft_strchr(result, '$');
-	if (!*var_start)
-		return (result);
-	*var_end = *var_start + 1;
-	while (**var_end && (ft_isalnum(**var_end) || **var_end == '_'))
-		(*var_end)++;
-	if (*var_end == *var_start + 1)
+	while (find_next_var(result, &var_start, &var_end) && var_start)
 	{
-		temp = ft_strchr(*var_start + 1, '$');
-		if (!temp)
-			return (result);
-		*var_start = temp;
-		return (find_next_var(result, var_start, var_end));
+		result = process_single_var(result, var_start, var_end, env);
+		if (!result)
+			return (NULL);
 	}
 	return (result);
 }
+
+void	handle_quote_char(char *var_value, int *i, int *in_quotes,
+	char *quote_type)
+{
+	if (!*in_quotes && (var_value[*i] == '\'' || var_value[*i] == '"'))
+	{
+		*in_quotes = 1;
+		*quote_type = var_value[*i];
+		(*i)++;
+	}
+	else if (*in_quotes && var_value[*i] == *quote_type)
+	{
+		*in_quotes = 0;
+		*quote_type = 0;
+		(*i)++;
+	}
+}
+
+char	*process_quotes(char *var_value, char *clean_value)
+{
+	int		i;
+	int		j;
+	int		in_quotes;
+	char	quote_type;
+
+	i = 0;
+	j = 0;
+	in_quotes = 0;
+	quote_type = 0;
+	while (var_value[i])
+	{
+		if ((var_value[i] == '\'' || var_value[i] == '"'))
+			handle_quote_char(var_value, &i, &in_quotes, &quote_type);
+		else
+			clean_value[j++] = var_value[i++];
+	}
+	clean_value[j] = '\0';
+	return (clean_value);
+}
+// char	**add_env_var(char **env, char *new_var) in utils.c
